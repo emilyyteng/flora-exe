@@ -195,3 +195,4 @@ None. Prototype questions Q11–Q14 are resolved (2026-10-16).
 - **2026-10-16 (M3-01):** Custom weekly schema — `custom_weekly_goals` identity (name, target_count default 3, soft archive), `custom_weekly_goal_weeks` open progress, `custom_weekly_goal_records` closed snapshots (parallel to apps/LC records).
 - **2026-10-16 (M3-04 follow-up):** Check in is customs-only ±. LC has no Check in stepper; Weekly LC shows restored Today / This week tier count lines; Weekly goals + Check in cards share fixed 28rem height.
 - **2026-10-16 (feature close):** M3 Done (including M3-06 prototype cleanup). Archived daily/weekly copy clarifies that archive does not pause streaks. Feature status Shipped.
+- **2026-10-16 (superseded cleanup):** Deleted production orphans replaced by F11: `TodayStrip.tsx` / `today-streak-*` CSS (→ `HabitsStrip`), and `NextAchievements.tsx` / related CSS (removed from This week by R1.12).

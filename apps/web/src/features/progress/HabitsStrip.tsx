@@ -73,7 +73,7 @@ function DerivedPill({
       <div className="habits-pill-top">
         <span className="habits-pill-top-lead">
           <strong className="habits-n">{length}</strong>
-          <span className="habits-kind">daily streak</span>
+          <span className="habits-kind">day streak</span>
         </span>
         <span className="habits-mark" aria-hidden="true">
           {todayCounts ? "✓" : "−"}
@@ -109,7 +109,7 @@ function CustomActivePill({
       <div className="habits-pill-top">
         <span className="habits-pill-top-lead">
           <strong className="habits-n">{habit.length}</strong>
-          <span className="habits-kind">daily streak</span>
+          <span className="habits-kind">day streak</span>
         </span>
         <button
           type="button"
@@ -160,7 +160,7 @@ function ArchivedCustom({
       <div className="habits-pill-top">
         <span className="habits-pill-top-lead">
           <strong className="habits-n">{habit.length}</strong>
-          <span className="habits-kind">daily streak</span>
+          <span className="habits-kind">day streak</span>
         </span>
       </div>
       <span className="habits-label">{habit.name}</span>

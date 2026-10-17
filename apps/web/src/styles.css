@@ -3179,67 +3179,7 @@ textarea { min-height: 10rem; width: 100%; }
   color: var(--text);
 }
 
-/* M5-12 · today strip day-streak pills (R5.27) */
-.today-streak-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  gap: 0.45rem;
-}
-.today-streak-pill {
-  display: flex;
-  flex-direction: column;
-  gap: 0.08rem;
-  width: max-content;
-  max-width: 100%;
-  padding: 0.4rem 0.65rem;
-  border-radius: var(--radius-card);
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  font-variant-numeric: tabular-nums;
-}
-.today-streak-pill.is-done {
-  border-color: color-mix(in srgb, var(--accent-mint) 55%, var(--border));
-  background: color-mix(in srgb, var(--accent-mint) 12%, var(--surface));
-}
-.today-streak-pill.is-pending {
-  border-style: dashed;
-}
-.today-streak-pill-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.4rem;
-}
-.today-streak-n {
-  font-size: 1.2rem;
-  line-height: 1.1;
-}
-.today-streak-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--text-muted);
-}
-.today-streak-pts {
-  font-size: 0.75rem;
-  color: var(--text-subtle);
-  white-space: nowrap;
-}
-.today-streak-pill.is-done .today-streak-pts {
-  color: var(--accent-mint-deep);
-  font-weight: 600;
-}
-.today-streak-mark {
-  font-weight: 700;
-  color: var(--accent-purple-deep);
-}
-.today-streak-pill.is-done .today-streak-mark {
-  color: #3f6b5c;
-}
-
-/* F11 M2-01 · Habits strip (Home + Progress) — extends today-streak metrics */
+/* F11 M2-01 · Habits strip (Home + Progress); replaces F08 TodayStrip */
 .habits-strip {
   /* Nested inside Home / Progress today cards — not its own card */
   padding: 0;
@@ -4461,16 +4401,6 @@ a.home-section-link:hover,
   margin: 0 0 0.25rem;
   font-size: 0.8rem;
   color: var(--text-muted);
-}
-.progress-next-achievements .progress-section-title {
-  margin: 0 0 0.5rem;
-}
-.progress-next-achievements-list {
-  margin: 0;
-}
-.progress-next-achievements-foot {
-  margin: 0.55rem 0 0;
-  font-size: 0.8rem;
 }
 @media (max-width: 860px) {
   .progress-week-split {
