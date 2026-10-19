@@ -42,7 +42,7 @@ export default function CatCakeCard({
   /** Seconds before CSS animations start. Omit for flavor-based album stagger. */
   animationDelay?: number;
   showName?: boolean;
-  /** Shown as ×N badge when &gt; 1 (typically refundable dupes only). */
+  /** Shown as ×N badge when ≥ 1 (typically refundable dupes only). */
   count?: number;
   selected?: boolean;
   onClick?: () => void;
@@ -66,7 +66,7 @@ export default function CatCakeCard({
           <MedalIcon />
         </span>
       )}
-      {count != null && count > 1 && <span className="cc-card-count">×{count}</span>}
+      {count != null && count >= 1 && <span className="cc-card-count">×{count}</span>}
       <CatCake
         flavor={flavor}
         edition={edition}
