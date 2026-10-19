@@ -6,6 +6,7 @@ import { localDateInTimezone } from "./progress.js";
 import { apiClient } from "./test/apiClient.js";
 import { seedLeetcodeDaily, truncateAll } from "./test/dbHarness.js";
 import { integrationReady } from "./test/integrationSetup.js";
+import { mondayOfLocalWeek } from "./weeklyGoals.js";
 
 const TZ = "UTC";
 const q = `?tz=${encodeURIComponent(TZ)}`;
@@ -83,12 +84,22 @@ describe.skipIf(!integrationReady)("completions diary · LeetCode (M5-16)", () =
 
   it("week and month pulse stats include leetcode solve totals (M8-03)", async () => {
     const today = localDateInTimezone(new Date(), TZ);
-    await seedLeetcodeDaily(today, 2);
-    await seedLeetcodeDaily(addCivilDays(today, -1), 3);
+    // Do not use "yesterday": on Monday (Mon–Sun weeks) it falls in the prior week.
+    // Second day must be ≤ today (month/week pulses are through today) and ≥ week start.
+    const weekStart = mondayOfLocalWeek(new Date(), TZ);
+    if (today === weekStart) {
+      await seedLeetcodeDaily(today, 5);
+    } else {
+      await seedLeetcodeDaily(today, 2);
+      await seedLeetcodeDaily(weekStart, 3);
+    }
 
     const res = await apiClient().get(`/api/progress/completions${q}`).expect(200);
-    expect(res.body.stats.week.leetcode).toBeGreaterThanOrEqual(5);
-    expect(res.body.stats.month.leetcode).toBeGreaterThanOrEqual(5);
+    expect(res.body.stats.week.leetcode).toBe(5);
+    // Month-to-date excludes prior-month days when the week spans two months.
+    expect(res.body.stats.month.leetcode).toBeGreaterThanOrEqual(
+      today === weekStart || weekStart.slice(0, 7) === today.slice(0, 7) ? 5 : 2,
+    );
   });
 
   it("endDate+days returns only items in the inclusive window (M8-04)", async () => {
