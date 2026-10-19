@@ -49,4 +49,4 @@ Finish the Tasks wave after layout (**M2-02**): move Tasks onto explicit control
 
 ## Verification notes
 
-**2026-10-18:** Tasks controls → `Button` / `TextField` / `SelectField`. `EarnFlash` gained `placement: inline | toast`. Complete/applied (modal; row removed) → toast; actual-minutes save → inline under that card. Page-top flash removed. Weekly-target checkbox left as a labeled checkbox (not a Field primitive). `npm run check` passed.
+**2026-10-18:** Tasks controls → `Button` / `TextField` / `SelectField`. `EarnFlash` gained `placement: inline | toast`. Complete/applied (modal; row removed) → toast; actual-minutes save → inline under that card. Page-top flash removed. Weekly-target checkbox left as a labeled checkbox (not a Field primitive). `npm run check` passed. Commit: `e55169d`.
