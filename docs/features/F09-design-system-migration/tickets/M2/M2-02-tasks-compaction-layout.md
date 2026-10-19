@@ -1,7 +1,7 @@
 # M2-02: Tasks compaction layout
 
 **Status:** Ready
-**Blocked by:** M2-01
+**Blocked by:** (none) — M2-01 Done
 **Implements:** R.10, R.8 (page tabs already), R2.1 (from `../../spec.md`); Compact long pages + section chips → one well in `docs/design-system.md`
 **Type:** build
 

@@ -379,3 +379,21 @@ button.secondary.ui-chrome-tab.is-active:not(:disabled):hover {
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* —— Pager (F09 M2-01) —— */
+.ui-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.ui-pager-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  min-width: 3.5rem;
+  text-align: center;
+}

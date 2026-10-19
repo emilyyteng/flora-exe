@@ -51,7 +51,7 @@ No open tickets.
 
 ## M2: Core surface waves
 
-**Milestone status:** Not started
+**Milestone status:** In progress
 
 **Plan (2026-10-18):** Phase 1 — **M2-01 → M2-02 → M2-03** (Tasks). Then pause for **F08 M3** (recurring). Phase 2 — **M2-04 → M2-07** (Jobs / Apps / Interviews / Progress apply). Legacy chip *look* is **M4-03** (Ready; pairs with M2-04). M2-07 This week = audit/gaps only (F11 already remodeled the hub).
 
@@ -59,8 +59,7 @@ No open tickets.
 
 | Ticket | Title | Type | Status | Notes |
 |--------|-------|------|--------|-------|
-| [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | build | Ready | Unblocks Tasks + Jobs |
-| [M2-02](./tickets/M2/M2-02-tasks-compaction-layout.md) | Tasks compaction layout | build | Ready | Blocked by M2-01; R.10 |
+| [M2-02](./tickets/M2/M2-02-tasks-compaction-layout.md) | Tasks compaction layout | build | Ready | Unblocked; R.10 |
 | [M2-03](./tickets/M2/M2-03-tasks-controls-earnflash.md) | Tasks controls + near-control EarnFlash | build | Ready | Blocked by M2-02; R.9 |
 | [M2-04](./tickets/M2/M2-04-jobs-chrome-pager-notice.md) | Jobs chrome, `Pager`, ranking `OneTimeNotice` | build | Draft | After F08 M3; R.6/R.7/R.8 |
 | [M2-05](./tickets/M2/M2-05-applications-chrome.md) | Applications → `ChromeTab` + containerized chrome | build | Draft | After F08 M3 |
@@ -68,10 +67,11 @@ No open tickets.
 | [M2-07](./tickets/M2/M2-07-progress-apply-audit.md) | Progress apply + This week audit/gaps | build | Draft | After F08 M3; not a This week redesign |
 
 <details>
-<summary>Done (0)</summary>
+<summary>Done (1)</summary>
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
+| [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | |
 
 </details>
 

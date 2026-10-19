@@ -98,7 +98,7 @@ Visual appearance locked (M0). Shared React primitives live in [`apps/web/src/ui
 | **Card** | `.card` | Soft shadow OK | All-carded |
 | **Modal** | `ModalLayer` + `ModalHeader` / `ModalBody` / `ModalFooter` | Shell + inner anatomy (M1-12) | Footer: **secondary then primary** `Button`; flat (no shadow) |
 | **Banner** | `EarnFlash` / `OneTimeNotice` | Mint base | EarnFlash near control (toast fallback); OneTimeNotice stays section-top (M1-10) |
-| **Pager** | Shared `Pager` helper when first list migrates (M2+) | Prev · `page / pages` (mono text) · Next; default page size **25** | **No** page-jump `<select>`, **no** page-size selector. Jobs `.pager` + jump select is migration debt |
+| **Pager** | [`Pager`](../apps/web/src/ui/Pager.tsx) · `.ui-pager` (+ `DEFAULT_PAGE_SIZE`) | Prev · `page / pages` (mono text) · Next; default page size **25** | Live (F09 M2-01). Renders nothing when `pages <= 1`. **No** page-jump `<select>`, **no** page-size selector. Jobs `.pager` + jump select remains migration debt until M2-04 |
 | **Heatmap** | `ProgressHeatmap` / `HistoryCalendar` via [`intensityScale.ts`](../apps/web/src/features/progress/intensityScale.ts) | `--heat-0`…`--heat-4` (vivid rose soft peak); empty = `--surface-2` | RGB lerp mirrors tokens; legend uses CSS vars |
 | **Deadline urgency** | `DeadlineUrgency` + SVG pies + `.deadline-tone-*` | `--urgency-overdue` · `--urgency-soon` (pink) · `--urgency-ahead` (=P1) · `--urgency-ok` | Countdown: **Plex Mono**, zero-padded units joined by **`:`**; extra gap after pie cluster; SVG pies (no conic seam) |
 | **Priority** | `PriorityBadge` → `Badge` `p0`–`p2` compact | P0–P2 RYG | |
@@ -164,11 +164,11 @@ Locked via `/prototype/f09/patterns` surface A (verdict 2026-10-15).
 
 **Default:** long lists use a classic **bottom pager** — Prev · `page / pages` · Next — under the list (or under a clamped well). Default page size **25**. Optional duplicate pager above when the well is tall. Reject infinite scroll / “load more” as the system default.
 
-**Standardize as a shared `Pager` component** (build when the first list migrates; document the contract now). Anatomy is only Prev / current-page text / Next. **Do not** include a page-jump `<select>` (Jobs today) or a page-size selector.
+**Shared component:** [`apps/web/src/ui/Pager.tsx`](../apps/web/src/ui/Pager.tsx) (F09 M2-01). Anatomy is only Prev / current-page text / Next. Export `DEFAULT_PAGE_SIZE` (**25**) for callers. When `pages <= 1`, the component renders nothing. **Do not** include a page-jump `<select>` (Jobs today) or a page-size selector.
 
 **Special case:** calendar-anchored time series (Progress Past work completions) may use a day / **7-day window** instead of numbered pages — Progress-only, not the general list rule.
 
-**Migrate later:** completions diary and similar logs; Jobs `.pager` → shared `Pager` (drop jump select); long boards inside 28rem wells (with M1-07).
+**Migrate next:** Tasks well (M2-02); Jobs `.pager` → shared `Pager` (drop jump select, M2-04); completions diary and similar logs (M2-07); long boards inside 28rem wells (with M1-07).
 
 ### EarnFlash / notice placement (F09 M1-10 · R.9 / Q10)
 
