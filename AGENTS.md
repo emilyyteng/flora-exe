@@ -42,14 +42,16 @@ For visual and interaction conventions, `docs/design-system.md` overrides ticket
 
 1. **Spec.** A new feature first gets an ID and a roadmap row (see Feature IDs), then a folder with `spec.md` from the template. Requirements are only things the user wants: *Established* (stated or confirmed by the user, and the only kind that may be implemented) or *Proposed* (suggested by the agent, awaiting confirmation). What the code does today goes in a separate **Current behavior** section, each item marked *Conforms*, *Conflicts* or *Unspecified* against the requirements. Existing behavior is never a requirement just because it exists. Unknowns go under **Open questions**. Do not fill gaps with assumptions.
 2. **Tickets.** Break a milestone into tickets from the template, in that milestone's folder (`tickets/M<n>/`), and add a row to the feature's `board.md`. Each ticket cites the spec requirements it implements and lists acceptance criteria. A ticket never introduces a requirement the spec lacks.
-3. **Prototype (only when the ticket names design questions).** See Prototypes.
-4. **Implement.** Work one ticket at a time. Prefer a fresh conversation per ticket; the ticket file carries the context.
-5. **Verify** against the Definition of done.
-6. **Commit** the ticket, with its status and the board row updated in the same commit. Do **not** put that commit's own hash in the board or ticket in the same commit (a commit cannot contain its own hash). After the ticket commit exists, add the short hash to the board's Done row (and the ticket's verification notes if useful) in a **separate small follow-up commit** — often one follow-up that fills hashes for several tickets, or bundled with the next related docs touch. Until then the Done row may say `(this commit)` or leave the Commit cell blank.
-7. **Close the milestone** when all its tickets are Done: update the board and roadmap status, then add a changelog entry in its own commit. A bug found later in a closed milestone gets a ticket in that milestone's folder; the milestone stays Done, and the board shows the open ticket.
-8. **Close the feature** when every milestone is Done and every prototype the feature created is deleted (routes included). Also remove **production code and styles this feature superseded** (unused components, CSS, routes, dead props) so replacements do not leave orphans. Prefer a cleanup ticket near the end of the feature when the list is non-trivial; otherwise fold it into the last build or close-out commit. Do not delete another feature's open prototypes or code that feature still requires.
+3. **Delivery map (when scoping).** Any large scoping or implementation plan the user will approve before build must include an opinionated **commits / PRs breakup** (see Git → Waves and pull requests): named waves, which tickets land in which branch/PR, what may go direct to `main`, and where a pause (another feature) forces a wave boundary. The user reviews that map with the plan; do not start implementation until they accept it (or amend it).
+4. **Prototype (only when the ticket names design questions).** See Prototypes.
+5. **Implement.** Work one ticket at a time on the wave branch (or on `main` only when Git allows direct-to-main). Prefer a fresh conversation per ticket; the ticket file carries the context.
+6. **Verify** against the Definition of done.
+7. **Commit** the ticket, with its status and the board row updated in the same commit. Do **not** put that commit's own hash in the board or ticket in the same commit (a commit cannot contain its own hash). After the ticket commit exists, add the short hash to the board's Done row (and the ticket's verification notes if useful) in a **separate small follow-up commit** — often one follow-up that fills hashes for several tickets, or bundled with the next related docs touch. Until then the Done row may say `(this commit)` or leave the Commit cell blank.
+8. **Merge the wave** when its tickets are Done (open the PR when the user asks; see Git). Do not leave a half-finished wave on `main`.
+9. **Close the milestone** when all its tickets are Done: update the board and roadmap status, then add a changelog entry in its own commit. Record delivery links on the spec (PR URL(s) for that milestone, or the board section if there was no PR). A bug found later in a closed milestone gets a ticket in that milestone's folder; the milestone stays Done, and the board shows the open ticket.
+10. **Close the feature** when every milestone is Done and every prototype the feature created is deleted (routes included). Also remove **production code and styles this feature superseded** (unused components, CSS, routes, dead props) so replacements do not leave orphans. Prefer a cleanup ticket near the end of the feature when the list is non-trivial; otherwise fold it into the last build or close-out commit. Do not delete another feature's open prototypes or code that feature still requires.
 
-Prototype cleanup is feature work, not maintenance. A prototype is deleted once no open ticket references it, or together with others in a cleanup ticket near the end of the feature (see Prototypes → Lifecycle); the feature, not each milestone, waits on it. The same applies to superseded production code caused by the feature (see step 8).
+Prototype cleanup is feature work, not maintenance. A prototype is deleted once no open ticket references it, or together with others in a cleanup ticket near the end of the feature (see Prototypes → Lifecycle); the feature, not each milestone, waits on it. The same applies to superseded production code caused by the feature (see step 10).
 
 **If a requirement is missing, ambiguous, or contradicts the spec: stop.** Ask the user, record the answer in the spec (decisions log), then continue. Do not invent behavior, and do not quietly pick one side of a contradiction.
 
@@ -106,12 +108,48 @@ Surface everything; fix nothing outside the ticket's scope; create tickets only 
 
 ## Git
 
+### Commits
+
 - One commit per ticket. Message: `F08 M5-02: <imperative summary>` (or `MT-01: …` for maintenance), with a short body saying what changed and why.
-- **Board / ticket commit hashes:** record the short hash only after that commit exists, in a separate follow-up commit (see Feature workflow step 6). Do not amend repeatedly to self-reference the hash.
+- **Board / ticket commit hashes:** record the short hash only after that commit exists, in a separate follow-up commit (see Feature workflow). Do not amend repeatedly to self-reference the hash. Prefer recording hashes **on the wave branch** before the PR merges so the SHAs that land on `main` stay valid (see Merge style).
 - Milestone close-out is its own commit: roadmap status + changelog entry.
+- Keep commits scoped: no unrelated formatting or drive-by refactors.
 - Never push without the user asking. Never `git push --force`, `git add -f`, `git reset --hard`, `git clean`, or drop stashes or branches without explicit approval.
 - Before any cleanup, inspect and report first. Uncommitted work is never discarded.
-- Keep commits scoped: no unrelated formatting or drive-by refactors.
+
+### Waves and pull requests
+
+Default delivery unit is a **wave**: a named, finishable batch of related tickets — not an entire feature, and not every single ticket. Goal: readable GitHub history, reviewable scope, and safe pauses mid-milestone without half-merged work on `main`.
+
+| Path | Use when |
+|------|----------|
+| **Branch + PR** | More than one related ticket; multi-area change; work that may span sessions or pause for another feature |
+| **Direct to `main`** | One isolated, shippable maintenance/docs/fix ticket (or a tiny board-hash follow-up) after normal verification |
+
+**Rules:**
+
+- Name branches by wave, not by a months-long feature: e.g. `f09-m2-tasks`, `f08-m3-recurring` — not a single long-lived `feature/f09`.
+- Merge a wave when **its** tickets are Done, even if the milestone or feature continues later. If you will pause for other work, that pause is a **wave boundary** (merge or abandon the branch first).
+- One agent owns one wave branch; do not run parallel agents on the same branch.
+- Miscellaneous buckets (F09 M4, maintenance) are **not** one mega-branch. Each Ready ticket (or a tight intentional pair) is its own small PR or goes direct to `main`.
+- Unfinished tickets stay on the board (`Ready` / `Draft`); do not merge half-done waves. Park or delete the branch if the wave is abandoned.
+- **Scoping proposals must be opinionated** about this breakup (Feature workflow step 3): include a short map of branches → ticket commits → PR → `main`, plus what is direct-to-main. The user approves the map before implementation.
+- **When merging a PR:** use a **merge commit** (GitHub “Create a merge commit”), not squash and not rebase-merge, unless the user asks otherwise. Reason: ticket commits stay visible and board hashes recorded on the branch stay valid on `main`.
+
+**Merge style (detail):** Squash only when the user explicitly asks, or when the PR is a single noisy commit with no per-ticket hashes to preserve.
+
+**After merge:** Link the PR from the feature **spec** on the milestone (or wave) it delivered. If there was no PR (direct-to-main era or isolated tickets), link the **board** milestone section instead — it already lists per-ticket commit hashes.
+
+### Docs and planning commits
+
+| Kind | Where it lands |
+|------|----------------|
+| Process / `AGENTS.md` / templates / roadmap blurbs | Direct to `main` (isolated docs) |
+| Ticketing a wave (new ticket files + board rows) before the branch exists | Direct to `main` is OK; otherwise the **first commit(s) on the wave branch** |
+| Spec/board/requirement edits that belong to a build ticket | **Same commit** as that ticket, on the wave branch |
+| Board hash follow-ups | On the wave branch after the ticket commit(s), before merge (merge commit preserves SHAs) |
+| Milestone changelog / roadmap close-out | Own commit; on the closing wave branch, or direct to `main` if docs-only after the code PR already merged |
+| Isolated maintenance docs (e.g. MT-02) | Direct to `main` or a tiny solo PR |
 
 ## Database migrations
 

@@ -55,6 +55,8 @@ No open tickets.
 
 **Plan (2026-10-18):** Phase 1 — **M2-01 → M2-02 → M2-03** (Tasks). Then pause for **F08 M3** (recurring). Phase 2 — **M2-04 → M2-07** (Jobs / Apps / Interviews / Progress apply). Legacy chip *look* is **M4-03** (Ready; pairs with M2-04). M2-07 This week = audit/gaps only (F11 already remodeled the hub).
 
+**Delivery:** `f09-m2-tasks` (M2-01…03) → PR; then `f09-m2-lists` (M2-04…06); then `f09-m2-progress` (M2-07). Spec Delivery column + map: [spec.md](./spec.md#milestones).
+
 | Ticket | Title | Type | Status | Notes |
 |--------|-------|------|--------|-------|
 | [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | build | Ready | Unblocks Tasks + Jobs |

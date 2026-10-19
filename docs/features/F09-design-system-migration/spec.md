@@ -2,7 +2,7 @@
 
 **ID:** F09
 **Status:** Active
-**Last updated:** 2026-10-18 (M2 ticketed; Tasks wave Ready)
+**Last updated:** 2026-10-18 (M2 ticketed; Delivery column + wave map)
 
 ## Problem
 
@@ -17,13 +17,23 @@ The app looks less visually consistent with each feature. Recurring issues: blue
 
 ## Milestones
 
-| Milestone | Scope | Status |
-|-----------|-------|--------|
-| M0 | Purely visual + brand framing. Inventory production UI; explore direction broadly in **F09-owned** prototypes (not F08) — vibe packs, font switcher, color-meaning schemes, containment — then lock foundations in `docs/design-system.md`. Includes discussing product identity / possible rebrand as it ties to vibe | Done |
-| M1 | Build primitives; remove the global inheritance trap; document interaction/IA patterns (lists, feature shell, paired panel heights, banner placement, compact long pages); enforce mechanically; pilot-migrate **Home** | Done |
-| M2 | Wave migration of core surfaces (Tasks compaction first; then Jobs / Applications / Interviews, including R.6); list pagination defaults as implemented convention | Not started |
-| M3 | Remaining pages; CSS organization if still needed; retire dead opt-out and obsolete prototype styles; feature close-out | Not started |
-| M4 | Cleanup & extensions — ad hoc design-system polish and spikes that don’t fit M2 waves or M3 finish (e.g. heatmap contrast, negative-points banner standard) | Not started |
+| Milestone | Scope | Status | Delivery |
+|-----------|-------|--------|----------|
+| M0 | Purely visual + brand framing. Inventory production UI; explore direction broadly in **F09-owned** prototypes (not F08) — vibe packs, font switcher, color-meaning schemes, containment — then lock foundations in `docs/design-system.md`. Includes discussing product identity / possible rebrand as it ties to vibe | Done | [board § M0](./board.md#m0-visual-direction--foundations) (pre-wave; ticket commits on `main`) |
+| M1 | Build primitives; remove the global inheritance trap; document interaction/IA patterns (lists, feature shell, paired panel heights, banner placement, compact long pages); enforce mechanically; pilot-migrate **Home** | Done | [board § M1](./board.md#m1-primitives-patterns-enforcement-pilot-migrate) (pre-wave; ticket commits on `main`) |
+| M2 | Wave migration of core surfaces (Tasks compaction first; then Jobs / Applications / Interviews, including R.6); list pagination defaults as implemented convention | Not started | Planned waves — see below; PRs TBD |
+| M3 | Remaining pages; CSS organization if still needed; retire dead opt-out and obsolete prototype styles; feature close-out | Not started | [board § M3](./board.md#m3-finish--harden) until a PR exists |
+| M4 | Cleanup & extensions — ad hoc design-system polish and spikes that don’t fit M2 waves or M3 finish (e.g. heatmap contrast, negative-points banner standard) | Not started | Per-ticket / small PRs — not one mega-branch ([board § M4](./board.md#m4-cleanup--extensions)) |
+
+**M2 delivery map** (approved 2026-10-18; update with PR URLs when merged):
+
+```
+main
+  └─ f09-m2-tasks       M2-01, M2-02, M2-03  → PR → main
+  └─ (pause: F08 M3 recurring)
+  └─ f09-m2-lists       M2-04, M2-05, M2-06 (+ optional M4-03) → PR → main
+  └─ f09-m2-progress    M2-07                → PR or direct if tiny
+```
 
 F08 M7 and M8 are Done (2026-10-15), so the earlier gate that M0 wait on those layouts is cleared. Prefer M1 before F11 habit UI so new screens land on the system.
 
@@ -167,3 +177,4 @@ This table is a **parked defect log**, not a complete M0 checklist. M0 must stil
 - **2026-10-16:** Added **M4 Cleanup & extensions** for ad hoc system polish. **M4-01** heatmap contrast; **M4-02** negative-points notifications spike (moved from maintenance MT-11).
 - **2026-10-18:** Shared squared `FilterChips` shipped with F08 M6-04 (Board departures). Legacy Jobs location pills and Past work Completions `.ledger-subtab` filters ticketed as **M4-03** so chip look need not wait on the M2 ChromeTab surface wave.
 - **2026-10-18 (M2 plan):** M2 ticketed **M2-01–M2-07**. Implement Tasks first (**M2-01 → M2-02 → M2-03**), pause for **F08 M3** recurring, then resume Jobs/Apps/Interviews/Progress (**M2-04–M2-07**). **M4-03** Ready (pairs with M2-04). **M2-07** This week = audit/gaps only (F11 already remodeled the hub; supersedes the earlier “This week composition redesign in M2” framing from M1-07).
+- **2026-10-18 (delivery process):** Waves + PRs are the default for multi-ticket work (`AGENTS.md` → Git). Merge commits preferred (preserve ticket SHAs). Specs gain a Delivery column (PR link(s) or board section). Scoping plans must include a commits/PRs map for approval before build.

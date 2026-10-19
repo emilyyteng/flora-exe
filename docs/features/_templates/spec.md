@@ -14,9 +14,11 @@ What the user is struggling with, from their perspective.
 
 ## Milestones
 
-| Milestone | Scope | Status |
-|-----------|-------|--------|
-| M0 | … | Not started / In progress / Done |
+| Milestone | Scope | Status | Delivery |
+|-----------|-------|--------|----------|
+| M0 | … | Not started / In progress / Done | PR link(s), or [board § M0](./board.md) if none |
+
+**Delivery:** After a milestone (or wave) ships, link one or more clean GitHub PRs here. If work landed without a PR (direct to `main`, or before the wave process), link the matching **board** milestone section instead — the Done table already lists per-ticket commits. Large scoping plans must propose the commits/PRs breakup up front (`AGENTS.md` → Git → Waves and pull requests).
 
 ## Requirements
 

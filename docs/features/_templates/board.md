@@ -8,6 +8,8 @@ When a milestone has **no open tickets**, write `No open tickets.` under the mil
 
 **Milestone status:** Not started | Design | In progress | Done | Done, with open tickets
 
+<!-- Optional when using waves/PRs: **Delivery:** `f09-m2-tasks` → [PR #N](url); or “direct to main”. Spec Delivery column should match once merged. -->
+
 <!-- While tickets are open, use a table: -->
 
 | Ticket | Title | Type | Status | Notes |
