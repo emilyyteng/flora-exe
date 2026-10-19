@@ -268,7 +268,7 @@ export async function seedApplicationDocument(input: {
 }
 
 export async function seedTask(input: {
-  /** Legacy aliases: school→School, personal→Admin, application→Applications */
+  /** Legacy aliases: school→School, personal→Misc, application→Applications */
   category?: "school" | "personal" | "application" | "misc";
   categoryName?: string;
   status?: "open" | "completed";
@@ -288,8 +288,8 @@ export async function seedTask(input: {
     if (input.category === "application") {
       categoryName = "Applications";
       kind = "application";
-    } else if (input.category === "personal") {
-      categoryName = "Admin";
+    } else if (input.category === "personal" || input.category === "misc") {
+      categoryName = "Misc";
     } else {
       categoryName = "School";
     }

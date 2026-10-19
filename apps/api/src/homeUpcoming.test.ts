@@ -16,7 +16,7 @@ function item(partial: Partial<HomeUpcomingItem> & { at: string }): HomeUpcoming
     kind: "task",
     id: partial.id ?? "t1",
     title: partial.title ?? "Task",
-    categoryName: "Admin",
+    categoryName: "Misc",
     deadlineLabel: "Due",
     dueKind: "deadline",
     priority: null,

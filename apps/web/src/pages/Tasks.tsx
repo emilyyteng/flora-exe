@@ -5,6 +5,7 @@ import {
   completeTask,
   createTaskCategory,
   deleteTask,
+  deleteTaskCategory,
   duplicateTask,
   getTasks,
   getWeeklyGoals,
@@ -116,6 +117,10 @@ export default function Tasks() {
   const [renamingCategoryId, setRenamingCategoryId] = useState<string | null>(null);
   const [renameDraft, setRenameDraft] = useState("");
   const [renamingSaving, setRenamingSaving] = useState(false);
+  const [deleteCategoryConfirm, setDeleteCategoryConfirm] = useState<TaskCategoryRow | null>(
+    null,
+  );
+  const [deletingCategory, setDeletingCategory] = useState(false);
   const [editing, setEditing] = useState<TaskRow | null>(null);
   const [editingSubtasksFor, setEditingSubtasksFor] = useState<TaskRow | null>(null);
   const [removeConfirm, setRemoveConfirm] = useState<TaskRow | null>(null);
@@ -588,6 +593,24 @@ export default function Tasks() {
     }
   }
 
+  async function confirmDeleteCategory() {
+    if (!deleteCategoryConfirm || deletingCategory) return;
+    const category = deleteCategoryConfirm;
+    setDeletingCategory(true);
+    setError(null);
+    try {
+      await deleteTaskCategory(category.id);
+      setDeleteCategoryConfirm(null);
+      if (categoryId === category.id) setCategoryId(null);
+      invalidateListCache("tasks:");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete category");
+    } finally {
+      setDeletingCategory(false);
+    }
+  }
+
   async function saveRename(categoryId: string) {
     const name = renameDraft.trim();
     if (!name) return;
@@ -1027,6 +1050,7 @@ export default function Tasks() {
                   >
                     <TextField
                       type="text"
+                      fieldSize="sm"
                       value={renameDraft}
                       autoFocus
                       aria-label="Category name"
@@ -1061,18 +1085,35 @@ export default function Tasks() {
                   <>
                     <h2 className="task-section-title">{activeCategory.name}</h2>
                     {activeCategory.kind === "misc" && !activeCategory.system && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="task-section-rename-btn"
-                        aria-label={`Rename ${activeCategory.name}`}
-                        onClick={() => startRename(activeCategory)}
-                      >
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
-                          <path d="M13.5 6.5l3 3" />
-                        </svg>
-                      </Button>
+                      <span className="task-section-icon-actions">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="task-section-rename-btn"
+                          aria-label={`Rename ${activeCategory.name}`}
+                          onClick={() => startRename(activeCategory)}
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
+                            <path d="M13.5 6.5l3 3" />
+                          </svg>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="task-section-rename-btn"
+                          aria-label={`Delete ${activeCategory.name}`}
+                          onClick={() => setDeleteCategoryConfirm(activeCategory)}
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4h8v2" />
+                            <path d="M19 6l-1 14H6L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                          </svg>
+                        </Button>
+                      </span>
                     )}
                   </>
                 )}
@@ -1215,6 +1256,23 @@ export default function Tasks() {
             confirmLabel="Delete"
             onConfirm={() => void confirmRemove()}
             onCancel={() => setRemoveConfirm(null)}
+          />
+        </ModalLayer>
+      )}
+      {deleteCategoryConfirm && (
+        <ModalLayer
+          onClose={() => {
+            if (!deletingCategory) setDeleteCategoryConfirm(null);
+          }}
+        >
+          <StepActionConfirm
+            title={`Delete “${deleteCategoryConfirm.name}”?`}
+            description="All open and completed tasks in this category will be moved to Misc. The category itself will be removed."
+            confirmLabel={deletingCategory ? "Deleting…" : "Delete category"}
+            onConfirm={() => void confirmDeleteCategory()}
+            onCancel={() => {
+              if (!deletingCategory) setDeleteCategoryConfirm(null);
+            }}
           />
         </ModalLayer>
       )}

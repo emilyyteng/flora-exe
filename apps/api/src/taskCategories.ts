@@ -60,6 +60,22 @@ export async function getApplicationTaskCategory(db: Queryable): Promise<TaskCat
   return rows[0];
 }
 
+/** Reserved misc dump ground (MT-12). Open + completed tasks land here when a category is deleted. */
+export async function getMiscDumpCategory(db: Queryable): Promise<TaskCategoryRow> {
+  const { rows } = await db.query<TaskCategoryRow>(
+    `${categorySelect}
+     WHERE c.kind = 'misc' AND c.system = true AND lower(c.name) = 'misc'
+     GROUP BY c.id
+     LIMIT 1`,
+  );
+  if (!rows[0]) {
+    throw new Error("Misc task category is missing — run migrations");
+  }
+  return rows[0];
+}
+
+const RESERVED_MISC_NAMES = new Set(["misc", "admin", "applications"]);
+
 export async function createTaskCategory(
   db: Queryable,
   name: string,
@@ -68,7 +84,11 @@ export async function createTaskCategory(
   if (!trimmed) {
     throw Object.assign(new Error("name is required"), { status: 400 });
   }
+  if (RESERVED_MISC_NAMES.has(trimmed.toLowerCase())) {
+    throw Object.assign(new Error("That category name is reserved"), { status: 400 });
+  }
   try {
+    // Keep user categories before reserved Misc (sort_order 10000).
     const { rows } = await db.query<{ id: string }>(
       `INSERT INTO task_categories (name, kind, system, sort_order)
        VALUES ($1, 'misc', false, 1000)
@@ -94,10 +114,13 @@ export async function renameTaskCategory(
   if (!trimmed) {
     throw Object.assign(new Error("name is required"), { status: 400 });
   }
+  if (RESERVED_MISC_NAMES.has(trimmed.toLowerCase())) {
+    throw Object.assign(new Error("That category name is reserved"), { status: 400 });
+  }
   const existing = await getTaskCategoryById(db, id);
   if (!existing) return null;
   if (existing.kind === "application" || existing.system) {
-    throw Object.assign(new Error("Applications category cannot be renamed"), { status: 400 });
+    throw Object.assign(new Error("Reserved category cannot be renamed"), { status: 400 });
   }
   try {
     await db.query(
@@ -114,27 +137,22 @@ export async function renameTaskCategory(
   return getTaskCategoryById(db, id);
 }
 
-export async function deleteTaskCategory(db: Queryable, id: string): Promise<"ok" | "missing" | "blocked"> {
+export async function deleteTaskCategory(db: Queryable, id: string): Promise<"ok" | "missing"> {
   const existing = await getTaskCategoryById(db, id);
   if (!existing) return "missing";
   if (existing.kind === "application" || existing.system) {
-    throw Object.assign(new Error("Applications category cannot be deleted"), { status: 400 });
+    throw Object.assign(new Error("Reserved category cannot be deleted"), { status: 400 });
   }
-  if (existing.openCount > 0) {
-    return "blocked";
+  const misc = await getMiscDumpCategory(db);
+  if (misc.id === id) {
+    throw Object.assign(new Error("Reserved category cannot be deleted"), { status: 400 });
   }
-  // Completed misc tasks in this category: move to Admin so history isn't orphaned.
-  const admin = await db.query<{ id: string }>(
-    `SELECT id FROM task_categories WHERE lower(name) = 'admin' AND kind = 'misc' LIMIT 1`,
+  // Move open + completed tasks to Misc so nothing is orphaned or blocked.
+  await db.query(
+    `UPDATE tasks SET category_id = $2, updated_at = now()
+     WHERE category_id = $1`,
+    [id, misc.id],
   );
-  const adminId = admin.rows[0]?.id;
-  if (adminId && adminId !== id) {
-    await db.query(
-      `UPDATE tasks SET category_id = $2, updated_at = now()
-       WHERE category_id = $1 AND status = 'completed'`,
-      [id, adminId],
-    );
-  }
   // The points breakdown labels these earns by their recorded name once the category is gone.
   await db.query(
     `UPDATE points_events

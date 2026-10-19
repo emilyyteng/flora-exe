@@ -1113,6 +1113,12 @@ button.secondary.ui-button.todo-remove-btn:not(:disabled):hover {
   /* Shared row height = rename icon hit target */
   min-height: 1.45rem;
 }
+.task-section-icon-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.05rem;
+  flex: 0 0 auto;
+}
 .task-section-title {
   margin: 0;
   font-size: 1rem;
@@ -1158,11 +1164,9 @@ button.secondary.ui-button.todo-remove-btn:not(:disabled):hover {
   flex: 1 1 auto;
   min-width: 0;
 }
-.task-section-rename input,
 .task-section-rename .ui-field {
   flex: 1 1 auto;
   min-width: 8rem;
-  font-size: 0.95rem;
 }
 /* Same cascade issue as card toolbar icons — Button sm padding must not crush the SVG. */
 button.secondary.ui-button.task-section-rename-btn {

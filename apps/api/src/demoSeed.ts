@@ -231,9 +231,9 @@ export async function resetDemoDatabase(db: Pool): Promise<DemoSeedSummary> {
   const byName = Object.fromEntries(catIds.rows.map((r) => [r.name, r.id]));
   const appsCategoryId = catIds.rows.find((r) => r.kind === "application")?.id;
   const schoolCategoryId = byName["School"];
-  const adminCategoryId = byName["Admin"];
+  const adminCategoryId = byName["Misc"] ?? byName["Admin"];
   if (!appsCategoryId || !schoolCategoryId || !adminCategoryId) {
-    throw new Error("Demo seed requires Applications/School/Admin task categories");
+    throw new Error("Demo seed requires Applications/School/Misc task categories");
   }
 
   // Open application tasks for a few ranked postings not yet applied

@@ -93,7 +93,7 @@ describe.skipIf(!integrationReady)("tasks API", () => {
 
   it("POST /api/tasks creates misc tasks in named categories", async () => {
     const schoolId = await categoryIdByName("School");
-    const adminId = await categoryIdByName("Admin");
+    const adminId = await categoryIdByName("Misc");
 
     const school = await apiClient()
       .post("/api/tasks")
@@ -143,7 +143,7 @@ describe.skipIf(!integrationReady)("tasks API", () => {
     expect(admin.body).toMatchObject({
       category: "misc",
       categoryId: adminId,
-      categoryName: "Admin",
+      categoryName: "Misc",
       title: "Book flight",
     });
   });
@@ -324,7 +324,7 @@ describe.skipIf(!integrationReady)("tasks API", () => {
       title: "Reading",
       organization: "History",
     });
-    const adminId = await categoryIdByName("Admin");
+    const adminId = await categoryIdByName("Misc");
 
     await apiClient()
       .patch(`/api/tasks/${created.id}`)
@@ -348,7 +348,16 @@ describe.skipIf(!integrationReady)("tasks API", () => {
     expect(new Date(row.rows[0].due_at as Date).toISOString()).toBe("2025-11-01T12:00:00.000Z");
   });
 
-  it("task categories: create, block delete with open tasks, delete when empty", async () => {
+  it("task categories: delete moves open + completed tasks to Misc; Misc is reserved", async () => {
+    const miscId = await categoryIdByName("Misc");
+    const miscRow = (await apiClient().get("/api/task-categories").expect(200)).body
+      .categories as Array<{ id: string; name: string; system: boolean; sortOrder: number }>;
+    const misc = miscRow.find((c) => c.id === miscId);
+    expect(misc).toMatchObject({ name: "Misc", system: true });
+    expect(misc!.sortOrder).toBeGreaterThanOrEqual(10000);
+
+    await apiClient().delete(`/api/task-categories/${miscId}`).expect(400);
+
     const name = `Club ${Date.now()}`;
     const created = await apiClient()
       .post("/api/task-categories")
@@ -356,15 +365,35 @@ describe.skipIf(!integrationReady)("tasks API", () => {
       .expect(201);
     expect(created.body).toMatchObject({ name, kind: "misc", system: false });
 
-    const task = await apiClient()
+    const openTask = await apiClient()
       .post("/api/tasks")
       .send({ categoryId: created.body.id, title: "Meeting notes" })
       .expect(201);
+    const doneTask = await apiClient()
+      .post("/api/tasks")
+      .send({ categoryId: created.body.id, title: "Past meetup" })
+      .expect(201);
+    await apiClient().post(`/api/tasks/${doneTask.body.id}/complete`).expect(200);
 
-    await apiClient().delete(`/api/task-categories/${created.body.id}`).expect(409);
-
-    await apiClient().delete(`/api/tasks/${task.body.id}`).expect(200);
     await apiClient().delete(`/api/task-categories/${created.body.id}`).expect(200);
+
+    const open = await pool.query<{ category_id: string }>(
+      `SELECT category_id FROM tasks WHERE id = $1`,
+      [openTask.body.id],
+    );
+    const done = await pool.query<{ category_id: string }>(
+      `SELECT category_id FROM tasks WHERE id = $1`,
+      [doneTask.body.id],
+    );
+    expect(open.rows[0]!.category_id).toBe(miscId);
+    expect(done.rows[0]!.category_id).toBe(miscId);
+
+    const cats = await apiClient().get("/api/task-categories").expect(200);
+    expect(
+      (cats.body.categories as Array<{ id: string }>).some((c) => c.id === created.body.id),
+    ).toBe(false);
+    const names = (cats.body.categories as Array<{ name: string }>).map((c) => c.name);
+    expect(names[names.length - 1]).toBe("Misc");
   });
 
   it("POST /api/tasks/:id/complete marks school/personal tasks completed", async () => {

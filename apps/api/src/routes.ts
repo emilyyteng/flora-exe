@@ -1045,10 +1045,6 @@ api.delete("/task-categories/:id", async (req, res) => {
       res.status(404).json({ error: "Category not found" });
       return;
     }
-    if (result === "blocked") {
-      res.status(409).json({ error: "Category still has open tasks" });
-      return;
-    }
     res.json({ ok: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Bad request";
