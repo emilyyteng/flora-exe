@@ -83,7 +83,7 @@ This table is a **parked defect log**, not a complete M0 checklist. M0 must stil
 | Behavior | Where | Status | Notes |
 |----------|-------|--------|-------|
 | ~~A global `button` rule makes every button filled `--accent-blue-deep` with a `:not(...)` opt-out chain~~ | `styles.css` | Conforms R.1 / R1.1 (M1-04) | Bare `button` is a reset; product look from `Button` / `.ui-button*` / legacy `.secondary` / feature classes. Chain removed |
-| Global element rules still structure bare `input` / `textarea` / `select` (padding, border); focus is ink not blue | `styles.css` | Conflicts R.1 (shim) | Structural shim until forms move to `TextField` / `SelectField` (page waves / M1-05+). `a` still global |
+| Global element rules still structure bare `input` / `textarea` / `select` (padding, border); focus is ink not blue | `styles.css` | Conflicts R.1 (shim) | Ticketed **M4-07**; surfaced when Field sm lost to `input[type=date\|time]` (M4-05). `a` still global |
 | `button.secondary` remains as legacy variant (~100+ uses); ink hover (M1-04) | across `apps/web/src` | Unspecified | Prefer `Button` for new UI; full call-site cleanup with surface waves |
 
 | `:root` tokens ("Sakura Terminal" palette): `--accent-{pink,blue,purple,mint,yellow}` + `-deep`, `--surface`, `--border`, `--text*`, `--danger*`, `--radius-*`, `--shadow-*` | `styles.css` | Conflicts (roles remapped in M0) | M0 locked ink-desk roles in `design-system.md`; prod token names/values migrate in M1+ |

@@ -104,6 +104,7 @@ Ad hoc design-system cleanups and extensions that don’t fit M2 surface waves o
 | [M4-01](./tickets/M4/M4-01-heatmap-color-contrast.md) | Heatmap colors — more contrast on lower activity | build | Draft | Pale / low-variation heat scale |
 | [M4-02](./tickets/M4/M4-02-negative-points-notifications.md) | Spike: notifications for negative point events | spike | Draft | Moved from MT-11 |
 | [M4-03](./tickets/M4/M4-03-migrate-legacy-filter-chips.md) | Migrate legacy filter chips to shared `FilterChips` | build | Ready | Jobs loc + Past work kind; pairs with M2-04 |
+| [M4-07](./tickets/M4/M4-07-retire-bare-field-shim.md) | Retire bare field structural shim | refactor | Ready | From M4-05; IDs M4-04…06 live on `f09-m2-tasks` until that PR merges |
 
 <details>
 <summary>Done (0)</summary>
