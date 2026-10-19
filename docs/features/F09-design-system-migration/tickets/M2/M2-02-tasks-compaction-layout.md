@@ -60,4 +60,4 @@ Keep existing open / completed **`ChromeTab`** page tabs. Chip counts follow the
 
 ## Verification notes
 
-**2026-10-18:** Tasks page is one `.card`: title → Open/Completed `ChromeTab` → category `FilterChips` (counts for the active tab only) → single category header (rename/Add) → **28rem** `.task-well` → shared `Pager` (25). Stacked per-category sections removed. Page index resets when view or category changes. Density / sticky compose **deferred** — clamp + chips keep Add and list in a usable first viewport without them. EarnFlash still page-top (M2-03). `npm run check` passed.
+**2026-10-18:** Tasks page is one `.card`: title → Open/Completed `ChromeTab` → category `FilterChips` (counts for the active tab only) → single category header (rename/Add) → **28rem** `.task-well` → shared `Pager` (25). Stacked per-category sections removed. Page index resets when view or category changes. Density / sticky compose **deferred** — clamp + chips keep Add and list in a usable first viewport without them. EarnFlash still page-top (M2-03). `npm run check` passed. Commit: `123e956`.
