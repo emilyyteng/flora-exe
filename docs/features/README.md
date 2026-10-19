@@ -9,7 +9,7 @@ Each feature has a permanent ID (`F<NN>`) and, once it has a spec, a folder `F<N
 | ID | Feature | Summary | Spec |
 |----|---------|---------|------|
 | F08 | Accomplishment, detail pages & rewards | Task/application detail pages, reflections on real work, points ledger, weekly goals, celebration, Cat Cake Collection v1 (seeds), Progress redesign, board departures log, recurring tasks. M0–M2, M4–M8 shipped; then M3 | [spec](./F08-accomplishment-rewards/spec.md) · [board](./F08-accomplishment-rewards/board.md) |
-| F09 | Design system migration | Comprehensive visual system + phased migration: M0–M1 Done; next M2 surface waves; M4 cleanup & extensions (heatmap, negative-points spike) | [spec](./F09-design-system-migration/spec.md) · [board](./F09-design-system-migration/board.md) |
+| F09 | Design system migration | Comprehensive visual system + phased migration: M0–M1 Done; M2 ticketed (Tasks Ready first, then F08 M3 pause, then Jobs/Apps/Interviews/Progress); M4 cleanup & extensions | [spec](./F09-design-system-migration/spec.md) · [board](./F09-design-system-migration/board.md) |
 
 ## Planned
 

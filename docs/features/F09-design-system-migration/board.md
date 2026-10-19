@@ -53,7 +53,17 @@ No open tickets.
 
 **Milestone status:** Not started
 
-Tickets after M1. Expected: Tasks compaction (R.10 / M1-11 tactics); **Jobs / Applications / Interviews → `ChromeTab` + containerized title→tabs→chips anatomy** + shared `Pager` (drop jump select); Jobs banner → `OneTimeNotice` (R.6); Progress apply M1-07 height + EarnFlash near-control (M1-10) + This week composition. Legacy chip *look* (Jobs loc / Past work kind → shared `FilterChips`) is **M4-03**, so it need not wait on the full M2 chrome wave.
+**Plan (2026-10-18):** Phase 1 — **M2-01 → M2-02 → M2-03** (Tasks). Then pause for **F08 M3** (recurring). Phase 2 — **M2-04 → M2-07** (Jobs / Apps / Interviews / Progress apply). Legacy chip *look* is **M4-03** (Ready; pairs with M2-04). M2-07 This week = audit/gaps only (F11 already remodeled the hub).
+
+| Ticket | Title | Type | Status | Notes |
+|--------|-------|------|--------|-------|
+| [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | build | Ready | Unblocks Tasks + Jobs |
+| [M2-02](./tickets/M2/M2-02-tasks-compaction-layout.md) | Tasks compaction layout | build | Ready | Blocked by M2-01; R.10 |
+| [M2-03](./tickets/M2/M2-03-tasks-controls-earnflash.md) | Tasks controls + near-control EarnFlash | build | Ready | Blocked by M2-02; R.9 |
+| [M2-04](./tickets/M2/M2-04-jobs-chrome-pager-notice.md) | Jobs chrome, `Pager`, ranking `OneTimeNotice` | build | Draft | After F08 M3; R.6/R.7/R.8 |
+| [M2-05](./tickets/M2/M2-05-applications-chrome.md) | Applications → `ChromeTab` + containerized chrome | build | Draft | After F08 M3 |
+| [M2-06](./tickets/M2/M2-06-interviews-chrome.md) | Interviews → `ChromeTab` + containerized chrome | build | Draft | After F08 M3 |
+| [M2-07](./tickets/M2/M2-07-progress-apply-audit.md) | Progress apply + This week audit/gaps | build | Draft | After F08 M3; not a This week redesign |
 
 <details>
 <summary>Done (0)</summary>
@@ -91,7 +101,7 @@ Ad hoc design-system cleanups and extensions that don’t fit M2 surface waves o
 |--------|-------|------|--------|-------|
 | [M4-01](./tickets/M4/M4-01-heatmap-color-contrast.md) | Heatmap colors — more contrast on lower activity | build | Draft | Pale / low-variation heat scale |
 | [M4-02](./tickets/M4/M4-02-negative-points-notifications.md) | Spike: notifications for negative point events | spike | Draft | Moved from MT-11 |
-| [M4-03](./tickets/M4/M4-03-migrate-legacy-filter-chips.md) | Migrate legacy filter chips to shared `FilterChips` | build | Draft | Jobs loc + Past work kind; helper shipped F08 M6-04 |
+| [M4-03](./tickets/M4/M4-03-migrate-legacy-filter-chips.md) | Migrate legacy filter chips to shared `FilterChips` | build | Ready | Jobs loc + Past work kind; pairs with M2-04 |
 
 <details>
 <summary>Done (0)</summary>

@@ -2,7 +2,7 @@
 
 **ID:** F09
 **Status:** Active
-**Last updated:** 2026-10-18
+**Last updated:** 2026-10-18 (M2 ticketed; Tasks wave Ready)
 
 ## Problem
 
@@ -166,3 +166,4 @@ This table is a **parked defect log**, not a complete M0 checklist. M0 must stil
 - **2026-10-15 (M1 close):** M1 Done — primitives, patterns, Home pilot, `check:ui` enforcement. Achievement unlock ModalLayer debt → **M3-01**. Next: M2 surface waves.
 - **2026-10-16:** Added **M4 Cleanup & extensions** for ad hoc system polish. **M4-01** heatmap contrast; **M4-02** negative-points notifications spike (moved from maintenance MT-11).
 - **2026-10-18:** Shared squared `FilterChips` shipped with F08 M6-04 (Board departures). Legacy Jobs location pills and Past work Completions `.ledger-subtab` filters ticketed as **M4-03** so chip look need not wait on the M2 ChromeTab surface wave.
+- **2026-10-18 (M2 plan):** M2 ticketed **M2-01–M2-07**. Implement Tasks first (**M2-01 → M2-02 → M2-03**), pause for **F08 M3** recurring, then resume Jobs/Apps/Interviews/Progress (**M2-04–M2-07**). **M4-03** Ready (pairs with M2-04). **M2-07** This week = audit/gaps only (F11 already remodeled the hub; supersedes the earlier “This week composition redesign in M2” framing from M1-07).

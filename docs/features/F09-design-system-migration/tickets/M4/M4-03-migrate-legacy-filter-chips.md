@@ -1,9 +1,10 @@
 # M4-03: Migrate legacy filter chips to shared `FilterChips`
 
-**Status:** Draft
+**Status:** Ready
 **Blocked by:** (none)
 **Implements:** R.8 (from `../../spec.md`); Filter chips row in `docs/design-system.md`
 **Type:** build
+**Scheduled with:** pairs well with M2-04 (Jobs); can land anytime — does not wait on the full M2 chrome wave
 
 ## Found during
 
