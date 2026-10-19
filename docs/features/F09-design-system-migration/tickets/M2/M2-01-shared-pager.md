@@ -50,4 +50,4 @@ Prototype sketch lives only in `/prototype/f09/patterns` — do not import it fr
 
 ## Verification notes
 
-**2026-10-18:** Added `apps/web/src/ui/Pager.tsx` + `.ui-pager` styles; exported `Pager` and `DEFAULT_PAGE_SIZE` (25). Hides when `pages <= 1`. Design-system catalogue + List pagination section updated; F09 Jobs pager current-behavior note points at M2-01 / M2-04. `npm run check` passed (check:ui, typecheck, web build, 390 API tests). No list host migrated yet (M2-02+).
+**2026-10-18:** Added `apps/web/src/ui/Pager.tsx` + `.ui-pager` styles; exported `Pager` and `DEFAULT_PAGE_SIZE` (25). Hides when `pages <= 1`. Design-system catalogue + List pagination section updated; F09 Jobs pager current-behavior note points at M2-01 / M2-04. `npm run check` passed (check:ui, typecheck, web build, 390 API tests). No list host migrated yet (M2-02+). Commit: `cd4b2ad`.

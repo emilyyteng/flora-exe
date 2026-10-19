@@ -71,7 +71,7 @@ No open tickets.
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
-| [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | |
+| [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | `cd4b2ad` |
 
 </details>
 
