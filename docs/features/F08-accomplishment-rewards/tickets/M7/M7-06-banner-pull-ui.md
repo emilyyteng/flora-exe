@@ -51,3 +51,4 @@ Prototype Pull/CatCake as reference only. Shared `ui-btn` / design-system patter
 - Gacha refunds remain category `gacha` (Cake label on Earnings in M7-08).
 - Reduced motion: pull results land in full revealed grid (no sequential boxes).
 - Skip from sequential/waiting jumps straight to revealed results.
+- Pity meter / next-pull CE % apply only when the stage returns to idle (2026-10-19); balance still refreshes on the pull response.

@@ -302,7 +302,7 @@ M7 is devoted to the gacha and spending Seeds. Ledger storage may keep `points_*
   - CE base rate **1.5%**; soft pity from pull **26** (+4 percentage points per pull); hard pity at **40** (proportional soft window scaled from the former soft@13 / hard@20); pity resets only on a CE hit; **no** new-CE protection
   - Friendship cap of **5** (the original plus 5 friendship copies = **6 kept copies**)
   - **Manual** duplicate refunds only: classic **+18**, CE **+90**. A copy is refundable only when owned count is **above 6** (friendship must already be maxed). Refunds cannot reduce a cat below 6 copies, so Night unlock (3rd CE copy) is never undone by a refund
-  - Reveal is **one-by-one** (no auto-advance); reduced motion supported; designs readable at card sizes; no new dependencies
+  - Reveal is **one-by-one** (no auto-advance); reduced motion supported; designs readable at card sizes; no new dependencies. The Banner **pity meter** (and next-pull CE %) stay on the pre-pull value until the stage returns to idle (“Pull to bake something”), so a CE pity reset does not spoil a ×10 mid-reveal (2026-10-19)
   - Collection product layout is an **album grid**
   - **No full backfill** of past ledger balance into a gacha starting purse beyond what the live balance already is
   - A **10,000-run** simulation test of the rates
@@ -626,6 +626,7 @@ Nothing that depends on an open question may be implemented.
 - **2026-10-15:** M6 before M3. Board departures lock: log **board-gone** and **duplicate** deletes only (not filter rejects), each with a reason label; exclude applied+; **task removed** only when an open application task was actually deleted (duplicate *repoints* do not count); highlight + optional filter + row copy **task removed**; per-day count of task-removed departures (hide when 0); company display matches Jobs/Tasks (Simplify `department`); browser TZ; retention until the **next local day**; **no purge-on-read** (purge on day boundary).
 - **2026-10-15 (later):** M6 shipped (M6-01–M6-03). Remaining F08 milestone: M3.
 - **2026-10-19:** Weekly-goal streak flame show-from is **1** met week on Progress and the congrats banner (was Proposed: 2). R5.28 / F11 R3.9 aligned.
+- **2026-10-19:** Banner pity meter (and next-pull CE %) stay on the pre-pull value until the reveal returns to idle (“Pull to bake something”), so a CE pity reset does not spoil a ×10 before every cake is shown.
 - **2026-10-18:** Board departures Status filter revised (R6.6): replace the optional “Task removed only” toggle with three exclusive chips — **Left board** / **Duplicate** / **Task removed** — no all-at-once view; default Left board (M6-04).
 - **2026-10-13:** LeetCode types are named weekly and misc. Difficulty tiers are built in M5 and polished in M8. Days store only an aggregate count; past solves count as medium.
 - **2026-10-13:** Ledger fixes ticketed under M4, worked with M5: category totals double-subtract reversals (M4-02); re-completing a reopened task earns by the actual-time change (M4-03). Duplicate merges must move reflections (M2-01).

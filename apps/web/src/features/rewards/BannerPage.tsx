@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
   getRewardsCollection,
@@ -34,6 +34,8 @@ type BatchPhase = "idle" | "waiting" | "revealed";
 export default function BannerPage() {
   const { balance, refreshSeeds } = useOutletContext<RewardsOutletContext>();
   const [pity, setPity] = useState(0);
+  /** Server pity after the last pull; applied only when the reveal returns to idle. */
+  const pendingPityRef = useRef<number | null>(null);
   const [ownedCollectors, setOwnedCollectors] = useState(0);
   const [results, setResults] = useState<GachaPullResult[]>([]);
   const [batchPhase, setBatchPhase] = useState<BatchPhase>("idle");
@@ -90,6 +92,11 @@ export default function BannerPage() {
     setSeqActive(false);
     setSeqIndex(0);
     setSeqOpen(false);
+    // Hold pity through the reveal so a CE reset (or +10) does not spoil ×10.
+    if (pendingPityRef.current != null) {
+      setPity(pendingPityRef.current);
+      pendingPityRef.current = null;
+    }
   }
 
   async function doPull(count: 1 | 10) {
@@ -99,7 +106,7 @@ export default function BannerPage() {
     try {
       const out = await postRewardsPull(count);
       setResults(out.results);
-      setPity(out.pity);
+      pendingPityRef.current = out.pity;
       setOwnedCollectors((n) => {
         const newly = out.results.filter(
           (r) => r.edition === "collector" && r.isNew,
