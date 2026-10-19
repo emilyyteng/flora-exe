@@ -92,19 +92,21 @@ Visual appearance locked (M0). Shared React primitives live in [`apps/web/src/ui
 | **Button** | `Button` — classes `secondary ui-button` (+ `-primary` / `-ghost` / `-sm`) | `primary` · `secondary` · `ghost` × `sm` / `md` | Flat ink primary. Global filled-blue `button` + `:not(...)` chain removed (M1-04). Legacy `button.secondary` / `modal-confirm-btn` restyled to ink |
 | **Segmented** | `Segmented` — `.ui-segmented` + `.ui-seg` | Active = **soft ink wash** (ink text; not solid ink fill) | Compact in-content modes (e.g. Home 1w/2w). **Not** the page L2 filter under tabs (use filter chips) |
 | **Filter chips** | `FilterChips` — `.ui-filter-chips` + `.ui-filter-chip` | Active = ink border + light wash (`--tab-active-bg`); inactive = muted bordered square | Narrow-within-partition filters (not ChromeTab, not rounded `Segmented`). Horizontal, wrap OK. **Page L2** placement: **below tabs, left-aligned** (M1-06). Card-local exclusive filters may sit in the card head (e.g. Status Board departures). Jobs `.jobs-loc-chip` pills remain migration debt (M2) |
-| **Fields** | `TextField` · `SelectField` · `TextAreaField` — `.ui-field` (+ `.ui-field-num`); also bare `input`/`textarea`/`select` shim and `.rich-text-editor` | `md` · `num` (compact number) | Border-only hover; wash on focus. **Value text is regular weight (400)**. Never wrap `RichTextField` in a `<label>` (toolbar buttons are labelable — the first becomes the label’s control and steals clicks/focus); use `htmlFor` + editor `id` instead. Select is not the default L2 filter |
+| **Fields** | `TextField` · `SelectField` · `TextAreaField` — `.ui-field` (+ `-sm` / `-num`); also bare `input`/`textarea`/`select` shim and `.rich-text-editor` | `sm` · `md` · `num` (compact number) | Border-only hover; wash on focus. **Value text is regular weight (400)**. **`sm`** locks the same type, padding, and **border-box height** as `Button` `sm` (native select/date/time ignore padding alone). Never wrap `RichTextField` in a `<label>` (toolbar buttons are labelable — the first becomes the label’s control and steals clicks/focus); use `htmlFor` + editor `id` instead. Select is not the default L2 filter |
 | **ChromeTab** | `ChromeTab` (button) · `ChromeTabLink` (NavLink) — `.ui-chrome-tab` (+ `-nav` / `-subnav` / `-page`) | Active = **underline ink**; hover = ink text only | App nav (`nav`), feature subnav (`subnav`), page tabs (`page`). Same language, quieter at smaller sizes |
 | **Badge** | `Badge` — `.ui-badge` + `.ui-badge-<tone>` | Tones: `p0`–`p2`, `interview` (apps) / `goal` (**domain tech**), `applied`/`interviewing`/`accepted`/`declined`, `score`/`streak`, `liked` (warn), `danger`/`ok`/`dates`/`neutral` · sizes `md` / `compact` | Kind labels rendered **INTERVIEW** / **GOAL** uppercase; role tokens only |
 | **Card** | `.card` | Soft shadow OK | All-carded |
 | **Modal** | `ModalLayer` + `ModalHeader` / `ModalBody` / `ModalFooter` | Shell + inner anatomy (M1-12) | Footer: **secondary then primary** `Button`; flat (no shadow) |
 | **Banner** | `EarnFlash` / `OneTimeNotice` | Mint base | EarnFlash near control (toast fallback); OneTimeNotice stays section-top (M1-10) |
-| **Pager** | Shared `Pager` helper when first list migrates (M2+) | Prev · `page / pages` (mono text) · Next; default page size **25** | **No** page-jump `<select>`, **no** page-size selector. Jobs `.pager` + jump select is migration debt |
+| **Pager** | [`Pager`](../apps/web/src/ui/Pager.tsx) · `.ui-pager` (+ `DEFAULT_PAGE_SIZE`) | Prev · `page / pages` (mono text) · Next; default page size **25** | Live (F09 M2-01). Renders nothing when `pages <= 1`. **No** page-jump `<select>`, **no** page-size selector. Jobs `.pager` + jump select remains migration debt until M2-04 |
 | **Heatmap** | `ProgressHeatmap` / `HistoryCalendar` via [`intensityScale.ts`](../apps/web/src/features/progress/intensityScale.ts) | `--heat-0`…`--heat-4` (vivid rose soft peak); empty = `--surface-2` | RGB lerp mirrors tokens; legend uses CSS vars |
 | **Deadline urgency** | `DeadlineUrgency` + SVG pies + `.deadline-tone-*` | `--urgency-overdue` · `--urgency-soon` (pink) · `--urgency-ahead` (=P1) · `--urgency-ok` | Countdown: **Plex Mono**, zero-padded units joined by **`:`**; extra gap after pie cluster; SVG pies (no conic seam) |
 | **Priority** | `PriorityBadge` → `Badge` `p0`–`p2` compact | P0–P2 RYG | |
 | **In-content links** | Global `a` (M1-16); Home `.home-section-link` / title wrappers | Resting + hover text = **ink**; hover = **underline** (no blue/purple) | See Patterns → In-content links for exceptions |
 
 Interim F08 `ui-btn*`, old `.tab.on` blue active, legacy `.badge.*`, and bare `input`/`textarea`/`select` structural shim remain in `styles.css` for unmigrated call sites. New UI must use `apps/web/src/ui`. Do not reintroduce a global filled `button` default or a `:not(...)` opt-out chain.
+
+**Dense action rows** (card footers, inline edit clusters): pair `Button` `size="sm"` with `fieldSize="sm"`. Both use the same calculated border-box height (`font × line-height + padding + borders`) so selects and date/time cannot render taller than the button. Prefer the shared primitives over page-local compact CSS. Use `num` only for short numeric boxes, not as a stand-in for dense selects/dates.
 
 ## Patterns
 
@@ -164,11 +166,11 @@ Locked via `/prototype/f09/patterns` surface A (verdict 2026-10-15).
 
 **Default:** long lists use a classic **bottom pager** — Prev · `page / pages` · Next — under the list (or under a clamped well). Default page size **25**. Optional duplicate pager above when the well is tall. Reject infinite scroll / “load more” as the system default.
 
-**Standardize as a shared `Pager` component** (build when the first list migrates; document the contract now). Anatomy is only Prev / current-page text / Next. **Do not** include a page-jump `<select>` (Jobs today) or a page-size selector.
+**Shared component:** [`apps/web/src/ui/Pager.tsx`](../apps/web/src/ui/Pager.tsx) (F09 M2-01). Anatomy is only Prev / current-page text / Next. Export `DEFAULT_PAGE_SIZE` (**25**) for callers. When `pages <= 1`, the component renders nothing. **Do not** include a page-jump `<select>` (Jobs today) or a page-size selector.
 
 **Special case:** calendar-anchored time series (Progress Past work completions) may use a day / **7-day window** instead of numbered pages — Progress-only, not the general list rule.
 
-**Migrate later:** completions diary and similar logs; Jobs `.pager` → shared `Pager` (drop jump select); long boards inside 28rem wells (with M1-07).
+**Migrate next:** Jobs `.pager` → shared `Pager` (drop jump select, M2-04); completions diary and similar logs (M2-07). Tasks well migrated in M2-02.
 
 ### EarnFlash / notice placement (F09 M1-10 · R.9 / Q10)
 
@@ -179,11 +181,11 @@ Locked via `/prototype/f09/patterns` surface B (verdict 2026-10-15).
 | **`EarnFlash`** | **Near the control that earned** (inline under the row / action cluster, or a small portal anchored to that control). Must appear in the current viewport without scrolling to the page top. **Fallback:** sticky viewport toast when the action has no stable anchor (e.g. after modal close). Reject page-top-only and scroll-into-view jerks as the default. |
 | **`OneTimeNotice`** | Does **not** share the near-control rule. Event/result chrome may stay at the **host section top** (preferably still in that section’s first viewport). |
 
-Apply near-control EarnFlash on Tasks / Progress hosts in a follow apply ticket or M2 wave; pattern is locked here.
+**Tasks** applies near-control / toast fallback (**M2-03**). Progress hosts still migrate in M2-07.
 
 ### Compact long pages (F09 M1-11 · R.10 / Q11)
 
-Locked via `/prototype/f09/patterns` surface C (verdict 2026-10-15). **Tasks** is the first migrate target (M2).
+Locked via `/prototype/f09/patterns` surface C (verdict 2026-10-15). **Tasks** migrated in **M2-02** (chips → one 28rem well → `Pager`; density / sticky compose deferred as not needed after 1–3).
 
 Ordered tactics:
 
