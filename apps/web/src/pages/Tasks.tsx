@@ -38,7 +38,25 @@ import ModalLayer from "../ModalLayer";
 import PriorityBadge from "../PriorityBadge";
 import { invalidateListCache, readListCache, writeListCache } from "../listCache";
 import StepActionConfirm from "../StepActionConfirm";
-import { ChromeTab } from "../ui";
+import {
+  Button,
+  ChromeTab,
+  DEFAULT_PAGE_SIZE,
+  FilterChips,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Pager,
+  SelectField,
+  TextField,
+} from "../ui";
+
+type TasksEarnFlash = {
+  earn: PointsEarnInfo;
+  /** `row` when the earning control's card is still mounted; else toast. */
+  placement: "row" | "toast";
+  taskId?: string;
+};
 import AddTaskForm, { type AddTaskFormHandle } from "./AddTaskForm";
 import EditSubtasksModal from "./EditSubtasksModal";
 import EditTaskForm, { type EditTaskFormHandle } from "./EditTaskForm";
@@ -74,8 +92,6 @@ function isApplicationTask(row: TaskRow): boolean {
   return row.category === "application";
 }
 
-const SECTION_CLAMP_AFTER = 6;
-
 export default function Tasks() {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -94,6 +110,7 @@ export default function Tasks() {
   const [error, setError] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [addingCategory, setAddingCategory] = useState<TaskCategoryRow | null>(null);
+  const [createCategoryOpen, setCreateCategoryOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [creatingCategory, setCreatingCategory] = useState(false);
   const [renamingCategoryId, setRenamingCategoryId] = useState<string | null>(null);
@@ -104,7 +121,7 @@ export default function Tasks() {
   const [removeConfirm, setRemoveConfirm] = useState<TaskRow | null>(null);
   const [completeConfirm, setCompleteConfirm] = useState<TaskRow | null>(null);
   const [reopenConfirm, setReopenConfirm] = useState<TaskRow | null>(null);
-  const [earnFlash, setEarnFlash] = useState<PointsEarnInfo | null>(null);
+  const [earnFlash, setEarnFlash] = useState<TasksEarnFlash | null>(null);
   const { pushUnlocks } = useAchievementUnlocks();
   const [actualDrafts, setActualDrafts] = useState<Record<string, string>>({});
   const [dueDrafts, setDueDrafts] = useState<
@@ -118,6 +135,10 @@ export default function Tasks() {
   const [weeklySortBoostIds, setWeeklySortBoostIds] = useState<Set<string>>(() =>
     readIdSet(WEEKLY_BOOST_CACHE),
   );
+  /** Active category chip (L2). Counts follow the active page tab only. */
+  const [categoryId, setCategoryId] = useState<string | null>(null);
+  /** Page inside the category well; resets when view or category changes. */
+  const [listPage, setListPage] = useState(1);
   const addFormRef = useRef<AddTaskFormHandle>(null);
   const editFormRef = useRef<EditTaskFormHandle>(null);
 
@@ -198,6 +219,30 @@ export default function Tasks() {
       cancelled = true;
     };
   }, [view]);
+
+  /** Applications never appear as completed tasks — hide that chip on Completed. */
+  const visibleCategories =
+    view === "completed"
+      ? categories.filter((c) => c.kind !== "application")
+      : categories;
+
+  useEffect(() => {
+    const visible =
+      view === "completed"
+        ? categories.filter((c) => c.kind !== "application")
+        : categories;
+    if (visible.length === 0) {
+      setCategoryId(null);
+      return;
+    }
+    if (categoryId && visible.some((c) => c.id === categoryId)) return;
+    const withTasks = visible.find((c) => rows.some((r) => r.categoryId === c.id));
+    setCategoryId((withTasks ?? visible[0]!).id);
+  }, [categories, rows, categoryId, view]);
+
+  useEffect(() => {
+    setListPage(1);
+  }, [view, categoryId]);
 
   function requestCloseAdd() {
     addFormRef.current?.requestClose();
@@ -396,7 +441,10 @@ export default function Tasks() {
           : null,
       });
       setCompleteConfirm(null);
-      if (completed.points) setEarnFlash(completed.points);
+      // Row leaves the open list — no stable anchor; toast fallback (R.9).
+      if (completed.points) {
+        setEarnFlash({ earn: completed.points, placement: "toast" });
+      }
       pushUnlocks(completed.achievementUnlocks);
       setRows((current) => current.filter((item) => item.id !== row.id));
       setCounts((current) => ({
@@ -463,7 +511,9 @@ export default function Tasks() {
     setError(null);
     try {
       const { points, ...updated } = await patchTask(row.id, { actualMinutes });
-      if (points) setEarnFlash(points);
+      if (points) {
+        setEarnFlash({ earn: points, placement: "row", taskId: row.id });
+      }
       setRows((current) =>
         current.map((item) => (item.id === row.id ? { ...item, ...updated } : item)),
       );
@@ -483,15 +533,21 @@ export default function Tasks() {
 
   const miscCategories = categories.filter((c) => c.kind === "misc");
 
-  async function onCreateCategory(event: FormEvent) {
-    event.preventDefault();
+  function closeCreateCategoryModal() {
+    setCreateCategoryOpen(false);
+    setNewCategoryName("");
+  }
+
+  async function confirmCreateCategory() {
     const name = newCategoryName.trim();
     if (!name) return;
     setCreatingCategory(true);
     setError(null);
     try {
-      await createTaskCategory(name);
-      setNewCategoryName("");
+      const created = await createTaskCategory(name);
+      closeCreateCategoryModal();
+      setCategoryId(created.id);
+      setListPage(1);
       invalidateListCache("tasks:");
       await load();
     } catch (err) {
@@ -647,8 +703,9 @@ export default function Tasks() {
           )}
           {view === "open" && (
             <div className="task-card-toolbar">
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="sm"
                 className="task-edit-btn"
                 aria-label="Edit task"
                 disabled={pendingId === row.id}
@@ -658,9 +715,10 @@ export default function Tasks() {
                   <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
                   <path d="M13.5 6.5l3 3" />
                 </svg>
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 className="task-duplicate-btn"
                 aria-label="Duplicate task"
                 title="Duplicate task"
@@ -671,9 +729,10 @@ export default function Tasks() {
                   <rect x="8" y="8" width="11" height="11" rx="1.5" />
                   <path d="M5 15V5.5A1.5 1.5 0 0 1 6.5 4H15" />
                 </svg>
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 className="todo-remove-btn"
                 aria-label="Delete task"
                 disabled={pendingId === row.id}
@@ -682,7 +741,7 @@ export default function Tasks() {
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M6.3 6.3 17.7 17.7M17.7 6.3 6.3 17.7" />
                 </svg>
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -704,9 +763,29 @@ export default function Tasks() {
                 className="application-card-apply-by"
                 onSubmit={(event) => void saveDueAt(event, row)}
               >
+                {!application && (
+                  <label className="task-move-field">
+                    <span className="visually-hidden">Move to category</span>
+                    <SelectField
+                      fieldSize="sm"
+                      className="task-move-select"
+                      value={row.categoryId}
+                      disabled={pendingId === row.id}
+                      aria-label="Move to category"
+                      onChange={(event) => void moveTask(row, event.target.value)}
+                    >
+                      {miscCategories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </SelectField>
+                  </label>
+                )}
                 <label className="application-apply-by-field">
                   <span className="visually-hidden">Date kind</span>
-                  <select
+                  <SelectField
+                    fieldSize="sm"
                     className="application-apply-by-kind"
                     value={dueDraft.kind}
                     disabled={pendingId === row.id || !dueDraft.date}
@@ -717,12 +796,13 @@ export default function Tasks() {
                   >
                     <option value="deadline">Deadline</option>
                     <option value="target">Target</option>
-                  </select>
+                  </SelectField>
                 </label>
                 <label className="application-apply-by-field">
                   <span className="visually-hidden">Date</span>
-                  <input
+                  <TextField
                     type="date"
+                    fieldSize="sm"
                     value={dueDraft.date}
                     disabled={pendingId === row.id}
                     aria-label="Due date"
@@ -731,21 +811,18 @@ export default function Tasks() {
                 </label>
                 <label className="application-apply-by-field">
                   <span className="visually-hidden">Time</span>
-                  <input
+                  <TextField
                     type="time"
+                    fieldSize="sm"
                     value={dueDraft.time}
                     disabled={pendingId === row.id || !dueDraft.date}
                     aria-label="Due time"
                     onChange={(event) => setDueDraft(row.id, { time: event.target.value })}
                   />
                 </label>
-                <button
-                  type="submit"
-                  className="secondary"
-                  disabled={!dueSaveEnabled(row)}
-                >
+                <Button type="submit" variant="secondary" size="sm" disabled={!dueSaveEnabled(row)}>
                   Save
-                </button>
+                </Button>
                 {dueFlash[row.id] && (
                   <span className="save-flash-inline" role="status" aria-live="polite">
                     Saved!
@@ -779,48 +856,31 @@ export default function Tasks() {
                 </a>
               )}
               {view === "open" && !application && (
-                <button
-                  type="button"
-                  className="secondary"
+                <Button
+                  variant="secondary"
+                  size="sm"
                   disabled={pendingId === row.id}
                   onClick={() => setEditingSubtasksFor(row)}
                 >
                   Edit subtasks
-                </button>
+                </Button>
               )}
               {view === "open" && (
-                <button
-                  type="button"
-                  className="secondary"
+                <Button
+                  variant="secondary"
+                  size="sm"
                   disabled={pendingId === row.id}
                   onClick={() => setCompleteConfirm(row)}
                 >
                   {application ? "Mark applied" : "Complete"}
-                </button>
-              )}
-              {view === "open" && !application && (
-                <label className="task-move-field">
-                  <span className="visually-hidden">Move to category</span>
-                  <select
-                    className="task-move-select"
-                    value={row.categoryId}
-                    disabled={pendingId === row.id}
-                    aria-label="Move to category"
-                    onChange={(event) => void moveTask(row, event.target.value)}
-                  >
-                    {miscCategories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                </Button>
               )}
               {view === "completed" && !application && (
                 <label className="task-completed-actual-edit">
                   <span>Actual (min)</span>
-                  <input
+                  <TextField
                     type="number"
+                    fieldSize="num"
                     min={0}
                     step={1}
                     inputMode="numeric"
@@ -835,25 +895,25 @@ export default function Tasks() {
                       }))
                     }
                   />
-                  <button
-                    type="button"
-                    className="secondary"
+                  <Button
+                    variant="secondary"
+                    size="sm"
                     disabled={!actualSaveEnabled(row)}
                     onClick={() => void saveActualMinutes(row)}
                   >
                     Save
-                  </button>
+                  </Button>
                 </label>
               )}
               {view === "completed" && !application && (
-                <button
-                  type="button"
-                  className="secondary"
+                <Button
+                  variant="secondary"
+                  size="sm"
                   disabled={pendingId === row.id}
                   onClick={() => setReopenConfirm(row)}
                 >
                   Mark to-do
-                </button>
+                </Button>
               )}
               {view === "completed" && completedLabel && (
                 <span className="applied-date">Completed: {completedLabel}</span>
@@ -861,13 +921,56 @@ export default function Tasks() {
             </div>
           </div>
         )}
+        {earnFlash?.placement === "row" &&
+          earnFlash.taskId === row.id &&
+          earnFlash.earn && (
+            <EarnFlash
+              earn={earnFlash.earn}
+              placement="inline"
+              onDismiss={() => setEarnFlash(null)}
+            />
+          )}
       </article>
     );
   }
 
+  const activeCategory =
+    categories.find((c) => c.id === categoryId) ?? null;
+  const sectionTasks = !activeCategory
+    ? []
+    : rows
+        .filter((row) => row.categoryId === activeCategory.id)
+        .slice()
+        .sort((a, b) => {
+          if (activeCategory.kind !== "application") return 0;
+          const aTarget = weeklySortBoostIds.has(a.id) ? 0 : 1;
+          const bTarget = weeklySortBoostIds.has(b.id) ? 0 : 1;
+          return aTarget - bTarget;
+        });
+  const pageCount = Math.ceil(sectionTasks.length / DEFAULT_PAGE_SIZE);
+  const effectivePage =
+    pageCount === 0 ? 1 : Math.min(Math.max(1, listPage), pageCount);
+  const pageStart = (effectivePage - 1) * DEFAULT_PAGE_SIZE;
+  const pageTasks = sectionTasks.slice(pageStart, pageStart + DEFAULT_PAGE_SIZE);
+  const sectionEmpty = loaded && activeCategory !== null && sectionTasks.length === 0;
+
+  const categoryChipOptions = visibleCategories.map((category) => {
+    const n = rows.filter((row) => row.categoryId === category.id).length;
+    return {
+      value: category.id,
+      label: (
+        <>
+          {category.name}
+          <span className="ui-filter-chip-count">{n}</span>
+        </>
+      ),
+    };
+  });
+
   return (
-    <section>
-      <div className="tabs-row">
+    <section className="card tasks-page">
+      <h1 className="tasks-page-title">Tasks</h1>
+      <div className="tasks-tabs-row">
         <div className="ui-chrome-tabs" role="tablist" aria-label="Tasks">
           {TABS.map((tab) => (
             <ChromeTab
@@ -883,125 +986,187 @@ export default function Tasks() {
             </ChromeTab>
           ))}
         </div>
+        <Button
+          variant="primary"
+          size="sm"
+          className="tasks-add-category"
+          onClick={() => {
+            setNewCategoryName("");
+            setCreateCategoryOpen(true);
+          }}
+        >
+          Add category +
+        </Button>
       </div>
       {error && <p className="error">{error}</p>}
-      <EarnFlash earn={earnFlash} onDismiss={() => setEarnFlash(null)} />
       {!loaded && rows.length === 0 && <p className="muted">Loading…</p>}
-      {view === "open" && loaded && (
-        <div className="task-board">
-          {categories.map((category) => {
-            const sectionTasks = rows
-              .filter((row) => row.categoryId === category.id)
-              .slice()
-              .sort((a, b) => {
-                if (category.kind !== "application") return 0;
-                const aTarget = weeklySortBoostIds.has(a.id) ? 0 : 1;
-                const bTarget = weeklySortBoostIds.has(b.id) ? 0 : 1;
-                return aTarget - bTarget;
-              });
-            const empty = sectionTasks.length === 0;
-            const clamp = sectionTasks.length > SECTION_CLAMP_AFTER;
-            return (
-              <section
-                key={category.id}
-                className={
-                  empty
-                    ? "task-section task-section-empty"
-                    : clamp
-                      ? "task-section task-section-scroll"
-                      : "task-section"
-                }
-              >
-                <header className="task-section-header">
-                  <div className="task-section-title-row">
-                    {renamingCategoryId === category.id ? (
-                      <form
-                        className="task-section-rename"
-                        onSubmit={(event) => {
-                          event.preventDefault();
-                          void saveRename(category.id);
-                        }}
-                      >
-                        <input
-                          type="text"
-                          value={renameDraft}
-                          autoFocus
-                          aria-label="Category name"
-                          disabled={renamingSaving}
-                          onChange={(event) => setRenameDraft(event.target.value)}
-                          onKeyDown={(event) => {
-                            if (event.key === "Escape") {
-                              event.preventDefault();
-                              setRenamingCategoryId(null);
-                            }
-                          }}
-                        />
-                        <button type="submit" className="secondary" disabled={renamingSaving || !renameDraft.trim()}>
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          className="secondary"
-                          disabled={renamingSaving}
-                          onClick={() => setRenamingCategoryId(null)}
-                        >
-                          Cancel
-                        </button>
-                      </form>
-                    ) : (
-                      <>
-                        <h2 className="task-section-title">{category.name}</h2>
-                        <span className="task-section-count">{sectionTasks.length}</span>
-                        {category.kind === "misc" && !category.system && (
-                          <button
-                            type="button"
-                            className="task-section-rename-btn"
-                            aria-label={`Rename ${category.name}`}
-                            onClick={() => startRename(category)}
-                          >
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
-                              <path d="M13.5 6.5l3 3" />
-                            </svg>
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    className="secondary task-section-add"
-                    onClick={() => setAddingCategory(category)}
+      {loaded && visibleCategories.length > 0 && categoryId && (
+        <FilterChips
+          label="Category"
+          value={categoryId}
+          options={categoryChipOptions}
+          onChange={setCategoryId}
+        />
+      )}
+      {loaded && activeCategory && (
+        <>
+          <div
+            className={
+              pageCount <= 1 ? "task-board task-board-no-pager" : "task-board"
+            }
+          >
+            <header className="task-section-header">
+              <div className="task-section-title-row">
+                {renamingCategoryId === activeCategory.id ? (
+                  <form
+                    className="task-section-rename"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      void saveRename(activeCategory.id);
+                    }}
                   >
-                    Add
-                  </button>
-                </header>
-                {!empty && (
-                  <div className="task-section-body">
-                    {sectionTasks.map((row) => renderTaskCard(row))}
-                  </div>
+                    <TextField
+                      type="text"
+                      value={renameDraft}
+                      autoFocus
+                      aria-label="Category name"
+                      disabled={renamingSaving}
+                      onChange={(event) => setRenameDraft(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                          event.preventDefault();
+                          setRenamingCategoryId(null);
+                        }
+                      }}
+                    />
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      size="sm"
+                      disabled={renamingSaving || !renameDraft.trim()}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      disabled={renamingSaving}
+                      onClick={() => setRenamingCategoryId(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </form>
+                ) : (
+                  <>
+                    <h2 className="task-section-title">{activeCategory.name}</h2>
+                    {activeCategory.kind === "misc" && !activeCategory.system && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="task-section-rename-btn"
+                        aria-label={`Rename ${activeCategory.name}`}
+                        onClick={() => startRename(activeCategory)}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
+                          <path d="M13.5 6.5l3 3" />
+                        </svg>
+                      </Button>
+                    )}
+                  </>
                 )}
-              </section>
-            );
-          })}
-          <form className="task-new-category" onSubmit={(event) => void onCreateCategory(event)}>
-            <input
-              type="text"
-              value={newCategoryName}
-              placeholder="New category name"
-              onChange={(event) => setNewCategoryName(event.target.value)}
-              aria-label="New category name"
-            />
-            <button type="submit" className="secondary" disabled={creatingCategory || !newCategoryName.trim()}>
-              {creatingCategory ? "Adding…" : "Add category"}
-            </button>
-          </form>
-        </div>
+              </div>
+              {view === "open" && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="task-section-add"
+                  onClick={() => setAddingCategory(activeCategory)}
+                >
+                  Add
+                </Button>
+              )}
+            </header>
+            <div className="task-well">
+              {sectionEmpty ? (
+                <p className="muted task-well-empty">
+                  {view === "open"
+                    ? "No open tasks in this category."
+                    : "Nothing completed in this category yet."}
+                </p>
+              ) : (
+                pageTasks.map((row) => renderTaskCard(row))
+              )}
+            </div>
+          </div>
+          <Pager
+            page={effectivePage}
+            pages={pageCount}
+            onPage={setListPage}
+            label={`${activeCategory.name} pages`}
+          />
+        </>
       )}
-      {view === "completed" && loaded && rows.length === 0 && (
-        <p className="muted">Nothing in this tab yet.</p>
+      {loaded && visibleCategories.length === 0 && (
+        <p className="muted">
+          {view === "completed"
+            ? "No completed-task categories yet."
+            : "No task categories yet."}
+        </p>
       )}
-      {view === "completed" && rows.map((row) => renderTaskCard(row))}
+      {earnFlash?.placement === "toast" && (
+        <EarnFlash
+          earn={earnFlash.earn}
+          placement="toast"
+          onDismiss={() => setEarnFlash(null)}
+        />
+      )}
+      {createCategoryOpen && (
+        <ModalLayer
+          className="modal modal-compact"
+          labelledBy="create-category-title"
+          onClose={closeCreateCategoryModal}
+          dirty={newCategoryName.trim().length > 0}
+        >
+          <ModalHeader id="create-category-title" title="New category" />
+          <ModalBody>
+            <label className="tasks-create-category-label">
+              Name
+              <TextField
+                value={newCategoryName}
+                maxLength={80}
+                placeholder="e.g. School"
+                autoFocus
+                disabled={creatingCategory}
+                onChange={(event) => setNewCategoryName(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    void confirmCreateCategory();
+                  }
+                }}
+              />
+            </label>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="secondary"
+              disabled={creatingCategory}
+              onClick={closeCreateCategoryModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              disabled={creatingCategory || !newCategoryName.trim()}
+              onClick={() => void confirmCreateCategory()}
+            >
+              {creatingCategory ? "Creating…" : "Create"}
+            </Button>
+          </ModalFooter>
+        </ModalLayer>
+      )}
       {addingCategory && (
         <ModalLayer
           labelledBy="add-task-title"

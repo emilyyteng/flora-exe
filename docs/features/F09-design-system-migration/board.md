@@ -51,7 +51,7 @@ No open tickets.
 
 ## M2: Core surface waves
 
-**Milestone status:** Not started
+**Milestone status:** In progress
 
 **Plan (2026-10-18):** Phase 1 — **M2-01 → M2-02 → M2-03** (Tasks). Then pause for **F08 M3** (recurring). Phase 2 — **M2-04 → M2-07** (Jobs / Apps / Interviews / Progress apply). Legacy chip *look* is **M4-03** (Ready; pairs with M2-04). M2-07 This week = audit/gaps only (F11 already remodeled the hub).
 
@@ -59,19 +59,19 @@ No open tickets.
 
 | Ticket | Title | Type | Status | Notes |
 |--------|-------|------|--------|-------|
-| [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | build | Ready | Unblocks Tasks + Jobs |
-| [M2-02](./tickets/M2/M2-02-tasks-compaction-layout.md) | Tasks compaction layout | build | Ready | Blocked by M2-01; R.10 |
-| [M2-03](./tickets/M2/M2-03-tasks-controls-earnflash.md) | Tasks controls + near-control EarnFlash | build | Ready | Blocked by M2-02; R.9 |
 | [M2-04](./tickets/M2/M2-04-jobs-chrome-pager-notice.md) | Jobs chrome, `Pager`, ranking `OneTimeNotice` | build | Draft | After F08 M3; R.6/R.7/R.8 |
 | [M2-05](./tickets/M2/M2-05-applications-chrome.md) | Applications → `ChromeTab` + containerized chrome | build | Draft | After F08 M3 |
 | [M2-06](./tickets/M2/M2-06-interviews-chrome.md) | Interviews → `ChromeTab` + containerized chrome | build | Draft | After F08 M3 |
 | [M2-07](./tickets/M2/M2-07-progress-apply-audit.md) | Progress apply + This week audit/gaps | build | Draft | After F08 M3; not a This week redesign |
 
 <details>
-<summary>Done (0)</summary>
+<summary>Done (3)</summary>
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
+| [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | `cd4b2ad` |
+| [M2-02](./tickets/M2/M2-02-tasks-compaction-layout.md) | Tasks compaction layout | `123e956` |
+| [M2-03](./tickets/M2/M2-03-tasks-controls-earnflash.md) | Tasks controls + near-control EarnFlash | `e55169d` |
 
 </details>
 
@@ -104,12 +104,15 @@ Ad hoc design-system cleanups and extensions that don’t fit M2 surface waves o
 | [M4-01](./tickets/M4/M4-01-heatmap-color-contrast.md) | Heatmap colors — more contrast on lower activity | build | Draft | Pale / low-variation heat scale |
 | [M4-02](./tickets/M4/M4-02-negative-points-notifications.md) | Spike: notifications for negative point events | spike | Draft | Moved from MT-11 |
 | [M4-03](./tickets/M4/M4-03-migrate-legacy-filter-chips.md) | Migrate legacy filter chips to shared `FilterChips` | build | Ready | Jobs loc + Past work kind; pairs with M2-04 |
-| [M4-07](./tickets/M4/M4-07-retire-bare-field-shim.md) | Retire bare field structural shim | refactor | Ready | From M4-05; IDs M4-04…06 live on `f09-m2-tasks` until that PR merges |
+| [M4-04](./tickets/M4/M4-04-button-icon-size.md) | Button `size="icon"` for dense icon toolbars | build | Ready | From M2-03 Tasks toolbar shrink; Tasks has temp override |
+| [M4-06](./tickets/M4/M4-06-prototype-tab-row-trailing-action.md) | Prototype page-tab row trailing action | prototype | Ready | Lock primary/secondary + tab vs chip; require follow-up enforce ticket; Tasks Add category stays as-is for now |
+| [M4-07](./tickets/M4/M4-07-retire-bare-field-shim.md) | Retire bare field structural shim | refactor | Ready | From M4-05; named Field must win over global input/select shim |
 
 <details>
-<summary>Done (0)</summary>
+<summary>Done (1)</summary>
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
+| [M4-05](./tickets/M4/M4-05-dense-field-sm.md) | Dense Field `sm` aligned with Button `sm` | `d5a5b0a` |
 
 </details>

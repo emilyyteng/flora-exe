@@ -115,6 +115,36 @@ a:hover {
 
 .shell { max-width: var(--shell-max); margin: 0 auto; padding: 1.5rem; }
 
+/*
+ * Tasks: lock the page to the viewport — no document scroll.
+ * Shell bottom padding keeps a 24px gap from the screen edge; the task well
+ * is the only scrollport so the pager stays on-screen.
+ */
+body:has(.tasks-page) {
+  height: 100dvh;
+  overflow: hidden;
+}
+body:has(.tasks-page) .shell {
+  box-sizing: border-box;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+}
+body:has(.tasks-page) .shell > .demo-banner,
+body:has(.tasks-page) .shell > header.top {
+  flex: 0 0 auto;
+}
+body:has(.tasks-page) .shell > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .demo-banner {
   margin: 0 0 1rem;
   padding: 0.65rem 0.9rem;
@@ -816,9 +846,7 @@ a.external .ext-icon { font-size: 0.75rem; }
   white-space: nowrap;
   flex-shrink: 0;
 }
-.application-apply-by-field input {
-  font-size: 0.8125rem;
-  padding: 0.32rem 0.55rem;
+.application-apply-by-field .ui-field:not([type="date"]):not([type="time"]) {
   min-width: 0;
 }
 .application-card-footer.row-actions {
@@ -851,19 +879,8 @@ a.external .ext-icon { font-size: 0.75rem; }
   flex: 1 1 auto;
   min-width: 0;
 }
-.application-card-apply-by button.secondary {
-  font-size: 0.75rem;
-  padding: 0.32rem 0.7rem;
-}
 .application-card-apply-by .application-apply-by-field {
   gap: 0;
-}
-.application-card-apply-by select.application-apply-by-kind,
-.application-card-apply-by input[type="date"],
-.application-card-apply-by input[type="time"] {
-  font-size: 0.75rem;
-  padding: 0.28rem 0.4rem;
-  line-height: 1.2;
 }
 .application-card-apply-by select.application-apply-by-kind {
   max-width: 6.5rem;
@@ -964,22 +981,38 @@ a.external .ext-icon { font-size: 0.75rem; }
 .task-card-toolbar .task-duplicate-btn {
   position: static;
 }
-.task-edit-btn,
-.task-duplicate-btn {
+/*
+ * Icon toolbars keep a fixed 1.65rem hit target. `Button` sm/md padding is for
+ * labeled controls and would crush the SVG if it wins the cascade (ui.css loads
+ * after this file). Match `button.secondary.ui-button*` so size stays stable.
+ */
+.task-card-toolbar button.secondary.ui-button.task-edit-btn,
+.task-card-toolbar button.secondary.ui-button.task-duplicate-btn,
+.task-card-toolbar button.secondary.ui-button.todo-remove-btn,
+button.secondary.ui-button.task-edit-btn,
+button.secondary.ui-button.task-duplicate-btn,
+button.secondary.ui-button.todo-remove-btn {
   width: 1.65rem;
   height: 1.65rem;
+  min-width: 1.65rem;
+  min-height: 1.65rem;
   padding: 0;
+  gap: 0;
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: none;
   display: grid;
   place-items: center;
   border-radius: var(--radius-soft-box);
+  font-size: 0;
+  line-height: 0;
 }
 .task-edit-btn:disabled,
-.task-duplicate-btn:disabled { opacity: 0.55; }
+.task-duplicate-btn:disabled,
+.todo-remove-btn:disabled { opacity: 0.55; }
 .task-edit-btn svg,
-.task-duplicate-btn svg {
+.task-duplicate-btn svg,
+.todo-remove-btn svg {
   width: 1rem;
   height: 1rem;
   fill: transparent;
@@ -988,10 +1021,13 @@ a.external .ext-icon { font-size: 0.75rem; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.task-edit-btn:hover:not(:disabled),
-.task-duplicate-btn:hover:not(:disabled) {
+button.secondary.ui-button.task-edit-btn:not(:disabled):hover,
+button.secondary.ui-button.task-duplicate-btn:not(:disabled):hover,
+button.secondary.ui-button.todo-remove-btn:not(:disabled):hover {
   background: var(--surface-2);
   border-color: var(--accent-pink);
+  color: var(--text);
+  box-shadow: none;
 }
 .task-category-pill {
   color: var(--text-muted);
@@ -999,72 +1035,120 @@ a.external .ext-icon { font-size: 0.75rem; }
   text-transform: capitalize;
 }
 
-.task-board {
+.tasks-page {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  margin-top: 0.75rem;
+  gap: 1rem;
 }
-.task-section {
+.tasks-page-title {
+  flex: 0 0 auto;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.tasks-tabs-row {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.tasks-tabs-row .ui-chrome-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.tasks-add-category {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.tasks-page > .ui-filter-chips,
+.tasks-page > .error,
+.tasks-page > .muted {
+  flex: 0 0 auto;
+}
+.tasks-create-category-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.tasks-page > .ui-pager {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+.task-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   background: var(--surface);
   overflow: hidden;
 }
-.task-section-empty {
-  background: transparent;
-}
 .task-section-header {
-  position: sticky;
-  top: 0;
-  z-index: 2;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.55rem 0.75rem;
-  background: color-mix(in srgb, var(--surface) 92%, var(--accent, #5b7cfa) 8%);
+  background: var(--surface-2);
   border-bottom: 1px solid var(--border);
-}
-.task-section-empty .task-section-header {
-  border-bottom: none;
 }
 .task-section-title-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   min-width: 0;
+  /* Shared row height = rename icon hit target */
+  min-height: 1.45rem;
 }
 .task-section-title {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-}
-.task-section-count {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  line-height: 1.45rem;
+  height: 1.45rem;
+  display: inline-flex;
+  align-items: center;
+  /*
+   * Cap-height of the heading sits above the geometric center of the icon.
+   * Nudge the label down so it optically shares the icon’s center line.
+   */
+  transform: translateY(0.2rem);
 }
 .task-section-add {
   flex: 0 0 auto;
 }
-.task-section-body {
+.task-well {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0.65rem 0.75rem 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
 }
-.task-section-scroll .task-section-body {
-  max-height: 28rem;
-  overflow-y: auto;
+.task-well-empty {
+  margin: 0;
 }
-.task-new-category {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.35rem 0;
-}
-.task-new-category input {
-  flex: 1 1 auto;
+/*
+ * No pager: keep a reserved band under the board inside .tasks-page so the
+ * board rim isn’t flush with the page card (pager’s usual footprint + gap).
+ */
+.task-board-no-pager {
+  margin-bottom: 1.3rem;
 }
 
 .task-section-rename {
@@ -1074,26 +1158,32 @@ a.external .ext-icon { font-size: 0.75rem; }
   flex: 1 1 auto;
   min-width: 0;
 }
-.task-section-rename input {
+.task-section-rename input,
+.task-section-rename .ui-field {
   flex: 1 1 auto;
   min-width: 8rem;
   font-size: 0.95rem;
 }
-.task-section-rename-btn {
+/* Same cascade issue as card toolbar icons — Button sm padding must not crush the SVG. */
+button.secondary.ui-button.task-section-rename-btn {
   flex: 0 0 auto;
   width: 1.45rem;
   height: 1.45rem;
+  min-width: 1.45rem;
+  min-height: 1.45rem;
   padding: 0;
+  gap: 0;
   border: none;
   background: transparent;
   box-shadow: none;
   display: grid;
   place-items: center;
   border-radius: var(--radius-soft-box);
-  cursor: pointer;
   color: var(--text-muted);
+  font-size: 0;
+  line-height: 0;
 }
-.task-section-rename-btn svg {
+button.secondary.ui-button.task-section-rename-btn svg {
   width: 0.9rem;
   height: 0.9rem;
   fill: transparent;
@@ -1102,9 +1192,11 @@ a.external .ext-icon { font-size: 0.75rem; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.task-section-rename-btn:hover {
-  color: var(--text);
+button.secondary.ui-button.task-section-rename-btn:not(:disabled):hover {
+  color: var(--ink);
   background: color-mix(in srgb, var(--text) 8%, transparent);
+  border-color: transparent;
+  box-shadow: none;
 }
 .task-move-field {
   margin: 0;
@@ -1112,9 +1204,6 @@ a.external .ext-icon { font-size: 0.75rem; }
   align-items: center;
 }
 .task-move-select {
-  font-size: 0.75rem;
-  padding: 0.28rem 0.4rem;
-  line-height: 1.2;
   max-width: 6.5rem;
 }
 .visually-hidden {
@@ -1794,20 +1883,39 @@ button.secondary.ui-button.rich-text-tool.is-active:hover {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.earn-flash-dismiss {
+button.secondary.ui-button.earn-flash-dismiss {
   border: none;
   background: transparent;
   color: var(--text-muted);
   font-size: 1.1rem;
   line-height: 1;
   padding: 0.1rem 0.35rem;
-  cursor: pointer;
-  box-shadow: none !important;
+  min-height: 0;
+  box-shadow: none;
 }
-.earn-flash-dismiss:hover {
+button.secondary.ui-button.earn-flash-dismiss:not(:disabled):hover {
   color: var(--text);
   background: transparent;
-  box-shadow: none !important;
+  border-color: transparent;
+  box-shadow: none;
+}
+/* Viewport toast fallback (F09 M1-10 / M2-03) when no stable earn anchor. */
+.earn-flash-toast-host {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  width: min(36rem, calc(100vw - 1.5rem));
+  pointer-events: none;
+}
+.earn-flash-toast-host .earn-flash {
+  pointer-events: auto;
+  margin: 0;
+  box-shadow: var(--shadow-soft);
+}
+.earn-flash.earn-flash-toast {
+  margin: 0;
 }
 
 /* One-time notice (design-system.md): persists seen in localStorage; × hides for this view. */

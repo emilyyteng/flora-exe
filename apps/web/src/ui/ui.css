@@ -54,9 +54,15 @@ button.secondary.ui-button-ghost:not(:disabled):hover {
   box-shadow: none;
 }
 
+/*
+ * Dense control height (F09 M4-05): font + line-height + padding + 1px borders.
+ * Shared by Button sm and Field sm so native select/date/time cannot drift taller.
+ */
 button.secondary.ui-button-sm {
   font-size: 0.75rem;
+  line-height: 1.3;
   padding: 0.28rem 0.65rem;
+  height: calc(0.75rem * 1.3 + 0.28rem * 2 + 2px);
 }
 
 button.secondary.ui-button:disabled {
@@ -95,6 +101,59 @@ button.secondary.ui-button:disabled {
 .ui-field:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+/*
+ * Dense action rows: same outer height as Button sm.
+ * Element+class selectors beat the structural date/time shim in styles.css.
+ *
+ * Select cannot use the same block padding as Button: padding eats the content
+ * box and clips value text / misaligns the chevron. Keep height; center with
+ * line-height and inline padding only.
+ */
+.ui-field-sm,
+input.ui-field.ui-field-sm {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  padding: 0.28rem 0.65rem;
+  height: calc(0.75rem * 1.3 + 0.28rem * 2 + 2px);
+}
+
+select.ui-field.ui-field-sm {
+  font-size: 0.75rem;
+  height: calc(0.75rem * 1.3 + 0.28rem * 2 + 2px);
+  padding-block: 0;
+  padding-inline: 0.65rem;
+  line-height: calc(0.75rem * 1.3 + 0.28rem * 2);
+}
+
+/* Named Field date/time use primitive metrics, not the bare-input shim. */
+input.ui-field[type="date"],
+input.ui-field[type="time"] {
+  font-size: 0.875rem;
+  padding: 0.45rem 0.6rem;
+}
+
+input.ui-field.ui-field-sm[type="date"],
+input.ui-field.ui-field-sm[type="time"] {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  padding: 0.28rem 0.65rem;
+  height: calc(0.75rem * 1.3 + 0.28rem * 2 + 2px);
+  /*
+   * Intrinsic width only — .ui-field { width: 100% } stretches the control and
+   * opens a large text→icon gap (especially on date). Do not set field-sizing or
+   * override the picker-indicator margin; those shrink time's natural gap.
+   */
+  width: auto;
+  max-width: 100%;
+  flex: 0 0 auto;
+}
+
+/* WebKit date/time inner edit adds its own padding; zero it so height can match. */
+input.ui-field.ui-field-sm[type="date"]::-webkit-datetime-edit,
+input.ui-field.ui-field-sm[type="time"]::-webkit-datetime-edit {
+  padding: 0;
 }
 
 .ui-field-num {
@@ -144,6 +203,18 @@ button.secondary.ui-button.ui-filter-chip.is-active:not(:disabled):hover {
   background: var(--tab-active-bg);
   color: var(--ink);
   font-weight: 600;
+}
+
+.ui-filter-chip-count {
+  margin-left: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+button.secondary.ui-button.ui-filter-chip.is-active .ui-filter-chip-count {
+  color: var(--ink);
 }
 
 /* —— Segmented —— */
@@ -378,4 +449,22 @@ button.secondary.ui-chrome-tab.is-active:not(:disabled):hover {
   border-color: var(--border);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+}
+
+/* —— Pager (F09 M2-01) —— */
+.ui-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.ui-pager-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  min-width: 3.5rem;
+  text-align: center;
 }
