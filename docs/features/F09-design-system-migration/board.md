@@ -112,6 +112,6 @@ Ad hoc design-system cleanups and extensions that don’t fit M2 surface waves o
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
-| [M4-05](./tickets/M4/M4-05-dense-field-sm.md) | Dense Field `sm` aligned with Button `sm` | (this commit) |
+| [M4-05](./tickets/M4/M4-05-dense-field-sm.md) | Dense Field `sm` aligned with Button `sm` | `d5a5b0a` |
 
 </details>
