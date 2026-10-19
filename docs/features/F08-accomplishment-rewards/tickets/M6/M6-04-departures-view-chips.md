@@ -44,4 +44,4 @@ Replace the Status Board departures “Task removed only” toggle with three ex
 ## Verification notes
 
 - Spec R6.6 revised 2026-10-18; changelog M6 bullet updated.
-- Commit hash pending follow-up after this commit exists.
+- Commit: `6dd1359`.
