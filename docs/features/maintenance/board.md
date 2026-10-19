@@ -19,7 +19,7 @@ Maintenance has no milestones, so the board has one open table and one done list
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
-| [MT-12](./tickets/MT-12-delete-task-category-to-misc.md) | Delete task category — move tasks to Misc | (this commit) |
+| [MT-12](./tickets/MT-12-delete-task-category-to-misc.md) | Delete task category — move tasks to Misc | `d5017d5` |
 | [MT-11](./tickets/MT-11-board-refresh-interrupt-recovery.md) | Detect interrupted board refresh and catch up | `9b8b4e3` |
 | [MT-01](./tickets/MT-01-api-typecheck-errors.md) | Fix all 17 API typecheck errors; add `npm run typecheck` and `npm run check` | `858febf` |
 | [MT-03](./tickets/MT-03-flaky-api-tests.md) | Make API integration tests deterministic | `2c5f514` |
