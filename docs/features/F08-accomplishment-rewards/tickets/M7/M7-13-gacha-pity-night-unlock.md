@@ -45,4 +45,4 @@ Existing `collectorRateAt`, Rules payload, Collection look clamp when locked.
 
 ## Verification notes
 
-`npm run check` passed (390 tests) before commit. Commit hash filled in follow-up.
+`npm run check` passed (390 tests) before commit. Ticket commit: `5f4b0d2`.
