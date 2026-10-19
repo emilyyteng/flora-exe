@@ -26,8 +26,9 @@ describe("catCakeCatalog", () => {
     expect(refundableCount(7)).toBe(1);
   });
 
-  it("Night unlocks at the second CE copy", () => {
+  it("Night unlocks at the third CE copy", () => {
     expect(nightUnlocked(1)).toBe(false);
-    expect(nightUnlocked(2)).toBe(true);
+    expect(nightUnlocked(2)).toBe(false);
+    expect(nightUnlocked(3)).toBe(true);
   });
 });

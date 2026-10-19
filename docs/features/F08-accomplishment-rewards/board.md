@@ -103,10 +103,11 @@ No open tickets.
 No open tickets.
 
 <details>
-<summary>Done (12)</summary>
+<summary>Done (13)</summary>
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
+| [M7-13](./tickets/M7/M7-13-gacha-pity-night-unlock.md) | Raise CE pity to 40; Night unlock at 3 copies | |
 | [M7-12](./tickets/M7/M7-12-ce-animation-day-night.md) | CE animations on Day/Night toggle and detail select | `5367f19` |
 | [M7-11](./tickets/M7/M7-11-gacha-rate-simulation.md) | Gacha rate simulation test | `87e6ac6` |
 | [M7-10](./tickets/M7/M7-10-rules-reference.md) | Rewards Rules reference | `3768f93` |

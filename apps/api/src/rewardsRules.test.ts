@@ -18,8 +18,10 @@ describe("getRewardsRulesPayload", () => {
     expect(rules.spending.gacha.costPerPull).toBe(180);
     expect(rules.spending.friendshipMax).toBe(FRIENDSHIP_MAX);
     expect(rules.spending.keptCopies).toBe(KEPT_COPIES);
-    expect(rules.spending.nightUnlockAtCopies).toBe(2);
-    expect(rules.spending.pityLadder[12]?.rate).toBe(collectorRateAt(13));
-    expect(rules.spending.pityLadder[19]?.rate).toBe(1);
+    expect(rules.spending.nightUnlockAtCopies).toBe(3);
+    expect(rules.spending.pityLadder[GACHA_CONFIG.softPityStart - 1]?.rate).toBe(
+      collectorRateAt(GACHA_CONFIG.softPityStart),
+    );
+    expect(rules.spending.pityLadder[GACHA_CONFIG.hardPity - 1]?.rate).toBe(1);
   });
 });

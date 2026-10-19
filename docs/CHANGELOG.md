@@ -312,8 +312,8 @@ Seeds become spendable on a dedicated Rewards area: a bakery gacha with collecti
 
 **Gacha.**
 
-- Twelve classic flavors and twelve Collector's Editions. Day/Night are skins of the same CE: Night unlocks on the second CE copy; toggling is free.
-- **180 seeds** per pull; ×10 costs 1,800. Base CE rate 1.5%, soft pity from pull 13, hard pity at 20. Server CSPRNG; a 10,000-run Monte Carlo guards the rates in CI.
+- Twelve classic flavors and twelve Collector's Editions. Day/Night are skins of the same CE: Night unlocks on the third CE copy; toggling is free.
+- **180 seeds** per pull; ×10 costs 1,800. Base CE rate 1.5%, soft pity from pull 26 (+4pp per pull), hard pity at 40. Server CSPRNG; a 10,000-run Monte Carlo guards the rates in CI.
 - Friendship keeps six copies; manual refunds only for copies above six (+18 classic / +90 CE).
 - Banner reveal is one-by-one (Skip jumps to closed boxes, then open-all, then a full revealed grid until dismiss). Collection is an album grid with Day/Night controls.
 

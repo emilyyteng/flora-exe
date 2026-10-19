@@ -43,6 +43,12 @@ describe.skipIf(!integrationReady)("cat cake collection", () => {
     matcha = (await getCatCakeCollection(pool)).variants.find(
       (v) => v.flavorId === "matcha" && v.edition === "collector",
     );
+    expect(matcha?.nightUnlocked).toBe(false);
+
+    await setOwnedCopies(pool, "matcha", "collector", 3);
+    matcha = (await getCatCakeCollection(pool)).variants.find(
+      (v) => v.flavorId === "matcha" && v.edition === "collector",
+    );
     expect(matcha?.nightUnlocked).toBe(true);
     expect(matcha?.selectedLook).toBe("day");
 
@@ -75,7 +81,7 @@ describe.skipIf(!integrationReady)("cat cake collection", () => {
 
   it("GET /api/rewards/collection returns the snapshot", async () => {
     await truncateAll();
-    await setOwnedCopies(pool, "lemon", "collector", 2);
+    await setOwnedCopies(pool, "lemon", "collector", 3);
     await setSelectedLook(pool, "lemon", "night");
     await setPity(pool, 3);
 

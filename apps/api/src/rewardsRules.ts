@@ -7,6 +7,7 @@ import {
   FRIENDSHIP_MAX,
   KEPT_COPIES,
   CAT_CAKE_FLAVOR_IDS,
+  NIGHT_UNLOCK_AT_COPIES,
 } from "./catCakeCatalog.js";
 import { GACHA_CONFIG, collectorRateAt } from "./catCakeGacha.js";
 import { POINTS } from "./pointsFormulas.js";
@@ -33,7 +34,7 @@ export type RewardsRulesPayload = {
     friendshipMax: number;
     keptCopies: number;
     flavorCount: number;
-    nightUnlockAtCopies: 2;
+    nightUnlockAtCopies: typeof NIGHT_UNLOCK_AT_COPIES;
     pityLadder: Array<{ pull: number; rate: number }>;
   };
 };
@@ -66,7 +67,7 @@ export function getRewardsRulesPayload(): RewardsRulesPayload {
       friendshipMax: FRIENDSHIP_MAX,
       keptCopies: KEPT_COPIES,
       flavorCount: CAT_CAKE_FLAVOR_IDS.length,
-      nightUnlockAtCopies: 2,
+      nightUnlockAtCopies: NIGHT_UNLOCK_AT_COPIES,
       pityLadder,
     },
   };

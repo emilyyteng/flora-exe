@@ -116,44 +116,54 @@ describe.skipIf(!integrationReady)("cat cake gacha pull/refund", () => {
     expect(await getPointsBalance(pool)).toBe(200);
   });
 
-  it("hard pity guarantees a CE on the 20th pull since last CE", async () => {
+  it("hard pity guarantees a CE on the 40th pull since last CE", async () => {
     await truncateAll();
     await fund(180);
-    await setPity(pool, 19);
-    // rate is 1 at pityAt 20, so first rng draw is unused for rate; flavor uses next
+    await setPity(pool, 39);
+    // rate is 1 at pityAt 40, so first rng draw is unused for rate; flavor uses next
     const rng = scriptedRng([0.5]); // only flavor roll
     const res = await pullCatCakes(pool, 1, rng);
     expect("results" in res).toBe(true);
     if (!("results" in res)) return;
     expect(res.results[0]!.edition).toBe("collector");
     expect(res.results[0]!.viaHardPity).toBe(true);
-    expect(res.results[0]!.pityAt).toBe(20);
+    expect(res.results[0]!.pityAt).toBe(40);
     expect(res.pity).toBe(0);
-    expect(collectorRateAt(20)).toBe(1);
+    expect(collectorRateAt(40)).toBe(1);
   });
 
-  it("soft pity climbs the CE rate from pull 13", async () => {
-    expect(collectorRateAt(13)).toBeGreaterThan(0.015);
+  it("soft pity climbs the CE rate from pull 26", async () => {
+    expect(collectorRateAt(25)).toBe(0.015);
+    expect(collectorRateAt(26)).toBeGreaterThan(0.015);
   });
 
-  it("second CE copy unlocks Night; first does not", async () => {
+  it("third CE copy unlocks Night; first two do not", async () => {
     await truncateAll();
-    await fund(360);
-    await setPity(pool, 19);
+    await fund(540);
+    await setPity(pool, 39);
     const first = await pullCatCakes(pool, 1, scriptedRng([0])); // hard pity CE, flavor 0
     expect("results" in first).toBe(true);
     if (!("results" in first)) return;
     expect(first.results[0]!.edition).toBe("collector");
     expect(first.results[0]!.nightUnlocked).toBe(false);
 
-    await setPity(pool, 19);
+    await setPity(pool, 39);
     const second = await pullCatCakes(pool, 1, scriptedRng([0]));
     expect("results" in second).toBe(true);
     if (!("results" in second)) return;
     expect(second.results[0]!.edition).toBe("collector");
     expect(second.results[0]!.flavorId).toBe(first.results[0]!.flavorId);
-    expect(second.results[0]!.nightUnlocked).toBe(true);
+    expect(second.results[0]!.nightUnlocked).toBe(false);
     expect(second.results[0]!.copiesAfter).toBe(2);
+
+    await setPity(pool, 39);
+    const third = await pullCatCakes(pool, 1, scriptedRng([0]));
+    expect("results" in third).toBe(true);
+    if (!("results" in third)) return;
+    expect(third.results[0]!.edition).toBe("collector");
+    expect(third.results[0]!.flavorId).toBe(first.results[0]!.flavorId);
+    expect(third.results[0]!.nightUnlocked).toBe(true);
+    expect(third.results[0]!.copiesAfter).toBe(3);
   });
 
   it("refund rejects at 6 copies and credits above 6", async () => {
@@ -180,10 +190,10 @@ describe.skipIf(!integrationReady)("cat cake gacha pull/refund", () => {
 
   it("selectCeLook requires Night unlock", async () => {
     await truncateAll();
-    await setOwnedCopies(pool, "peach", "collector", 1);
+    await setOwnedCopies(pool, "peach", "collector", 2);
     const locked = await selectCeLook(pool, "peach", "night");
     expect(locked).toMatchObject({ code: "night_locked" });
-    await setOwnedCopies(pool, "peach", "collector", 2);
+    await setOwnedCopies(pool, "peach", "collector", 3);
     const ok = await selectCeLook(pool, "peach", "night");
     expect(ok).toMatchObject({ selectedLook: "night", nightUnlocked: true });
   });
@@ -209,7 +219,7 @@ describe.skipIf(!integrationReady)("cat cake gacha pull/refund", () => {
     expect(refundRes.status).toBe(200);
     expect(refundRes.body.credited).toBe(18);
 
-    await setOwnedCopies(pool, "sesame", "collector", 2);
+    await setOwnedCopies(pool, "sesame", "collector", 3);
     const lookRes = await apiClient()
       .post("/api/rewards/look")
       .send({ flavorId: "sesame", look: "night" });

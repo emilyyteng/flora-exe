@@ -2,13 +2,15 @@
 
 export const FRIENDSHIP_MAX = 5;
 export const KEPT_COPIES = 1 + FRIENDSHIP_MAX;
+/** Mirror of API `NIGHT_UNLOCK_AT_COPIES` (Rules / Collection copy). */
+export const NIGHT_UNLOCK_AT_COPIES = 3;
 
 export const GACHA_DISPLAY = {
   costPerPull: 180,
   collectorBaseRate: 0.015,
-  softPityStart: 13,
-  softPityStep: 0.08,
-  hardPity: 20,
+  softPityStart: 26,
+  softPityStep: 0.04,
+  hardPity: 40,
   refund: { classic: 18, collector: 90 } as const,
 } as const;
 

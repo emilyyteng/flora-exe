@@ -26,6 +26,8 @@ export type CatCakeLook = "day" | "night";
 export const FRIENDSHIP_MAX = 5;
 /** Copies kept: the original plus `FRIENDSHIP_MAX` friendship dupes. */
 export const KEPT_COPIES = 1 + FRIENDSHIP_MAX;
+/** CE copies required before the Night skin unlocks (Day/Night are skins of one CE). */
+export const NIGHT_UNLOCK_AT_COPIES = 3;
 
 export function isCatCakeFlavorId(value: string): value is CatCakeFlavorId {
   return (CAT_CAKE_FLAVOR_IDS as readonly string[]).includes(value);
@@ -40,5 +42,5 @@ export function refundableCount(count: number): number {
 }
 
 export function nightUnlocked(collectorCopies: number): boolean {
-  return collectorCopies >= 2;
+  return collectorCopies >= NIGHT_UNLOCK_AT_COPIES;
 }

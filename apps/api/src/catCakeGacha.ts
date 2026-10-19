@@ -37,9 +37,10 @@ export type GachaConfig = {
 export const GACHA_CONFIG: GachaConfig = {
   costPerPull: 180,
   collectorBaseRate: 0.015,
-  softPityStart: 13,
-  softPityStep: 0.08,
-  hardPity: 20,
+  // Proportional soft window for hardPity 40 (scaled from soft@13 / hard@20).
+  softPityStart: 26,
+  softPityStep: 0.04,
+  hardPity: 40,
   refund: { classic: 18, collector: 90 },
 };
 
@@ -308,7 +309,7 @@ export async function selectCeLook(
   const copies = await getOwnedCopies(db, flavorId, "collector");
   if (!nightUnlocked(copies)) {
     return {
-      error: "Night skin unlocks at the second CE copy",
+      error: "Night skin unlocks at the third CE copy",
       code: "night_locked",
     };
   }

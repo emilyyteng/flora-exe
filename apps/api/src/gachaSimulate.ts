@@ -27,8 +27,8 @@ export type SimulationStats = {
   avgPullsAllClassics: number;
   avgPullsFullSet: number;
   avgNetCostFullSet: number;
-  /** Share of CE hits that landed exactly on hard pity (pull 20). */
-  hardPityOnlyAt20: boolean;
+  /** True when every hard-pity CE hit landed exactly at `cfg.hardPity`. */
+  hardPityOnlyAtHard: boolean;
 };
 
 /**
@@ -48,7 +48,7 @@ export function simulateGacha(
   let gapTotal = 0;
   let gapSum = 0;
   let hardHits = 0;
-  let hardHitsNotAt20 = 0;
+  let hardHitsNotAtHard = 0;
   let sumClassics = 0;
   let sumFull = 0;
   let sumNet = 0;
@@ -80,7 +80,7 @@ export function simulateGacha(
         gapSum += pityAt;
         if (rate >= 1) {
           hardHits++;
-          if (pityAt !== cfg.hardPity) hardHitsNotAt20++;
+          if (pityAt !== cfg.hardPity) hardHitsNotAtHard++;
         }
       } else {
         if (copies === 1 && ++classicsOwned === n) classicsDoneAt = pulls;
@@ -112,6 +112,6 @@ export function simulateGacha(
     avgPullsAllClassics: sumClassics / runs,
     avgPullsFullSet: sumFull / runs,
     avgNetCostFullSet: sumNet / runs,
-    hardPityOnlyAt20: hardHitsNotAt20 === 0,
+    hardPityOnlyAtHard: hardHitsNotAtHard === 0,
   };
 }

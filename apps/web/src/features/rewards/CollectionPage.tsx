@@ -13,6 +13,7 @@ import CatCakeCard from "./CatCakeCard";
 import FriendshipDots from "./FriendshipDots";
 import {
   FRIENDSHIP_MAX,
+  GACHA_DISPLAY,
   friendshipLevel,
   refundableCount,
   refundValue,
@@ -193,7 +194,7 @@ export default function CollectionPage() {
               {sel.n
                 ? variantDescription(FLAVOR_BY_ID[sel.flavor], sel.edition)
                 : sel.edition === "collector"
-                  ? "A rare Collector's Edition. Any banner pull can bake it; pity guarantees some Collector's Edition by pull 20."
+                  ? `A rare Collector's Edition. Any banner pull can bake it; pity guarantees some Collector's Edition by pull ${GACHA_DISPLAY.hardPity}.`
                   : "Classics drop at random from any pull."}
             </p>
             {sel.n > 0 && (

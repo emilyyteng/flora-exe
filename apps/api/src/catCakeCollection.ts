@@ -18,7 +18,7 @@ export type CatCakeVariantView = {
   copies: number;
   friendshipLevel: number;
   refundable: number;
-  /** Collector only: true once owned CE copies ≥ 2. */
+  /** Collector only: true once owned CE copies ≥ NIGHT_UNLOCK_AT_COPIES. */
   nightUnlocked: boolean | null;
   /** Collector only: selected Day/Night look (default day). */
   selectedLook: CatCakeLook | null;
