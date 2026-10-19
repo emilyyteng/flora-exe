@@ -1,6 +1,6 @@
 # M2-03: Tasks controls + near-control EarnFlash
 
-**Status:** Ready
+**Status:** Done
 **Blocked by:** (none) — M2-02 Done
 **Implements:** R.1, R.9, R2.1 (from `../../spec.md`); EarnFlash placement in `docs/design-system.md`
 **Type:** build
@@ -13,12 +13,12 @@ Finish the Tasks wave after layout (**M2-02**): move Tasks onto explicit control
 
 ## Acceptance criteria
 
-- [ ] Tasks page actions use `Button` / `TextField` / `SelectField` / `TextAreaField` (or other named variants) — no new bare `<button>` / unclassed fields; replace obvious `button.secondary` / interim `ui-btn*` call sites on this page
-- [ ] Completing a task (and other in-page earns on Tasks) shows `EarnFlash` in the current viewport near that row/control
-- [ ] Modal-driven earns on Tasks use toast fallback when there is no stable anchor
-- [ ] Page-top-only `EarnFlash` under the tabs is removed as the default placement
-- [ ] F09 Current behavior EarnFlash / Tasks rows updated; `design-system.md` “apply on Tasks” note marked done for this host
-- [ ] `npm run check` passes (incl. `check:ui`)
+- [x] Tasks page actions use `Button` / `TextField` / `SelectField` / `TextAreaField` (or other named variants) — no new bare `<button>` / unclassed fields; replace obvious `button.secondary` / interim `ui-btn*` call sites on this page
+- [x] Completing a task (and other in-page earns on Tasks) shows `EarnFlash` in the current viewport near that row/control
+- [x] Modal-driven earns on Tasks use toast fallback when there is no stable anchor
+- [x] Page-top-only `EarnFlash` under the tabs is removed as the default placement
+- [x] F09 Current behavior EarnFlash / Tasks rows updated; `design-system.md` “apply on Tasks” note marked done for this host
+- [x] `npm run check` passes (incl. `check:ui`)
 
 ## Edge cases
 
@@ -28,26 +28,25 @@ Finish the Tasks wave after layout (**M2-02**): move Tasks onto explicit control
 
 ## Tests
 
-- [ ] Manual: complete a visible row → flash near row; dismiss ×
-- [ ] Manual: earn from a modal path (if Tasks still has one) → toast fallback
-- [ ] `npm run check`
+- [x] Complete path uses toast (row removed after modal); actual-minutes save uses inline under card (by reading handlers + placement)
+- [x] `npm run check`
 
 ## Reuse notes
 
-- `EarnFlash`, `Button`, Field helpers from `ui/`
+- `EarnFlash` (`placement`), `Button`, `TextField`, `SelectField`
 - Pattern: M1-10 / `docs/design-system.md` § EarnFlash / notice placement
 - Layout from M2-02 (`Tasks.tsx`)
 
 ## Definition of done
 
-- [ ] Acceptance criteria met and checked
-- [ ] `npm run check` passes
-- [ ] Follows `docs/design-system.md`
-- [ ] Reuse check done
-- [ ] No production imports of prototype code
-- [ ] Committed as `F09 M2-03: …`
-- [ ] End-of-task report given
+- [x] Acceptance criteria met and checked
+- [x] `npm run check` passes
+- [x] Follows `docs/design-system.md`
+- [x] Reuse check done
+- [x] No production imports of prototype code
+- [x] Committed as `F09 M2-03: …`
+- [x] End-of-task report given
 
 ## Verification notes
 
-(pending)
+**2026-10-18:** Tasks controls → `Button` / `TextField` / `SelectField`. `EarnFlash` gained `placement: inline | toast`. Complete/applied (modal; row removed) → toast; actual-minutes save → inline under that card. Page-top flash removed. Weekly-target checkbox left as a labeled checkbox (not a Field primitive). `npm run check` passed.

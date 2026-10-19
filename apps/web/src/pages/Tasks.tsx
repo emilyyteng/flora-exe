@@ -38,7 +38,22 @@ import ModalLayer from "../ModalLayer";
 import PriorityBadge from "../PriorityBadge";
 import { invalidateListCache, readListCache, writeListCache } from "../listCache";
 import StepActionConfirm from "../StepActionConfirm";
-import { ChromeTab, DEFAULT_PAGE_SIZE, FilterChips, Pager } from "../ui";
+import {
+  Button,
+  ChromeTab,
+  DEFAULT_PAGE_SIZE,
+  FilterChips,
+  Pager,
+  SelectField,
+  TextField,
+} from "../ui";
+
+type TasksEarnFlash = {
+  earn: PointsEarnInfo;
+  /** `row` when the earning control's card is still mounted; else toast. */
+  placement: "row" | "toast";
+  taskId?: string;
+};
 import AddTaskForm, { type AddTaskFormHandle } from "./AddTaskForm";
 import EditSubtasksModal from "./EditSubtasksModal";
 import EditTaskForm, { type EditTaskFormHandle } from "./EditTaskForm";
@@ -102,7 +117,7 @@ export default function Tasks() {
   const [removeConfirm, setRemoveConfirm] = useState<TaskRow | null>(null);
   const [completeConfirm, setCompleteConfirm] = useState<TaskRow | null>(null);
   const [reopenConfirm, setReopenConfirm] = useState<TaskRow | null>(null);
-  const [earnFlash, setEarnFlash] = useState<PointsEarnInfo | null>(null);
+  const [earnFlash, setEarnFlash] = useState<TasksEarnFlash | null>(null);
   const { pushUnlocks } = useAchievementUnlocks();
   const [actualDrafts, setActualDrafts] = useState<Record<string, string>>({});
   const [dueDrafts, setDueDrafts] = useState<
@@ -412,7 +427,10 @@ export default function Tasks() {
           : null,
       });
       setCompleteConfirm(null);
-      if (completed.points) setEarnFlash(completed.points);
+      // Row leaves the open list — no stable anchor; toast fallback (R.9).
+      if (completed.points) {
+        setEarnFlash({ earn: completed.points, placement: "toast" });
+      }
       pushUnlocks(completed.achievementUnlocks);
       setRows((current) => current.filter((item) => item.id !== row.id));
       setCounts((current) => ({
@@ -479,7 +497,9 @@ export default function Tasks() {
     setError(null);
     try {
       const { points, ...updated } = await patchTask(row.id, { actualMinutes });
-      if (points) setEarnFlash(points);
+      if (points) {
+        setEarnFlash({ earn: points, placement: "row", taskId: row.id });
+      }
       setRows((current) =>
         current.map((item) => (item.id === row.id ? { ...item, ...updated } : item)),
       );
@@ -665,8 +685,9 @@ export default function Tasks() {
           )}
           {view === "open" && (
             <div className="task-card-toolbar">
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="sm"
                 className="task-edit-btn"
                 aria-label="Edit task"
                 disabled={pendingId === row.id}
@@ -676,9 +697,10 @@ export default function Tasks() {
                   <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
                   <path d="M13.5 6.5l3 3" />
                 </svg>
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 className="task-duplicate-btn"
                 aria-label="Duplicate task"
                 title="Duplicate task"
@@ -689,9 +711,10 @@ export default function Tasks() {
                   <rect x="8" y="8" width="11" height="11" rx="1.5" />
                   <path d="M5 15V5.5A1.5 1.5 0 0 1 6.5 4H15" />
                 </svg>
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 className="todo-remove-btn"
                 aria-label="Delete task"
                 disabled={pendingId === row.id}
@@ -700,7 +723,7 @@ export default function Tasks() {
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M6.3 6.3 17.7 17.7M17.7 6.3 6.3 17.7" />
                 </svg>
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -724,7 +747,7 @@ export default function Tasks() {
               >
                 <label className="application-apply-by-field">
                   <span className="visually-hidden">Date kind</span>
-                  <select
+                  <SelectField
                     className="application-apply-by-kind"
                     value={dueDraft.kind}
                     disabled={pendingId === row.id || !dueDraft.date}
@@ -735,11 +758,11 @@ export default function Tasks() {
                   >
                     <option value="deadline">Deadline</option>
                     <option value="target">Target</option>
-                  </select>
+                  </SelectField>
                 </label>
                 <label className="application-apply-by-field">
                   <span className="visually-hidden">Date</span>
-                  <input
+                  <TextField
                     type="date"
                     value={dueDraft.date}
                     disabled={pendingId === row.id}
@@ -749,7 +772,7 @@ export default function Tasks() {
                 </label>
                 <label className="application-apply-by-field">
                   <span className="visually-hidden">Time</span>
-                  <input
+                  <TextField
                     type="time"
                     value={dueDraft.time}
                     disabled={pendingId === row.id || !dueDraft.date}
@@ -757,13 +780,9 @@ export default function Tasks() {
                     onChange={(event) => setDueDraft(row.id, { time: event.target.value })}
                   />
                 </label>
-                <button
-                  type="submit"
-                  className="secondary"
-                  disabled={!dueSaveEnabled(row)}
-                >
+                <Button type="submit" variant="secondary" size="sm" disabled={!dueSaveEnabled(row)}>
                   Save
-                </button>
+                </Button>
                 {dueFlash[row.id] && (
                   <span className="save-flash-inline" role="status" aria-live="polite">
                     Saved!
@@ -797,29 +816,29 @@ export default function Tasks() {
                 </a>
               )}
               {view === "open" && !application && (
-                <button
-                  type="button"
-                  className="secondary"
+                <Button
+                  variant="secondary"
+                  size="sm"
                   disabled={pendingId === row.id}
                   onClick={() => setEditingSubtasksFor(row)}
                 >
                   Edit subtasks
-                </button>
+                </Button>
               )}
               {view === "open" && (
-                <button
-                  type="button"
-                  className="secondary"
+                <Button
+                  variant="secondary"
+                  size="sm"
                   disabled={pendingId === row.id}
                   onClick={() => setCompleteConfirm(row)}
                 >
                   {application ? "Mark applied" : "Complete"}
-                </button>
+                </Button>
               )}
               {view === "open" && !application && (
                 <label className="task-move-field">
                   <span className="visually-hidden">Move to category</span>
-                  <select
+                  <SelectField
                     className="task-move-select"
                     value={row.categoryId}
                     disabled={pendingId === row.id}
@@ -831,14 +850,15 @@ export default function Tasks() {
                         {cat.name}
                       </option>
                     ))}
-                  </select>
+                  </SelectField>
                 </label>
               )}
               {view === "completed" && !application && (
                 <label className="task-completed-actual-edit">
                   <span>Actual (min)</span>
-                  <input
+                  <TextField
                     type="number"
+                    fieldSize="num"
                     min={0}
                     step={1}
                     inputMode="numeric"
@@ -853,25 +873,25 @@ export default function Tasks() {
                       }))
                     }
                   />
-                  <button
-                    type="button"
-                    className="secondary"
+                  <Button
+                    variant="secondary"
+                    size="sm"
                     disabled={!actualSaveEnabled(row)}
                     onClick={() => void saveActualMinutes(row)}
                   >
                     Save
-                  </button>
+                  </Button>
                 </label>
               )}
               {view === "completed" && !application && (
-                <button
-                  type="button"
-                  className="secondary"
+                <Button
+                  variant="secondary"
+                  size="sm"
                   disabled={pendingId === row.id}
                   onClick={() => setReopenConfirm(row)}
                 >
                   Mark to-do
-                </button>
+                </Button>
               )}
               {view === "completed" && completedLabel && (
                 <span className="applied-date">Completed: {completedLabel}</span>
@@ -879,6 +899,15 @@ export default function Tasks() {
             </div>
           </div>
         )}
+        {earnFlash?.placement === "row" &&
+          earnFlash.taskId === row.id &&
+          earnFlash.earn && (
+            <EarnFlash
+              earn={earnFlash.earn}
+              placement="inline"
+              onDismiss={() => setEarnFlash(null)}
+            />
+          )}
       </article>
     );
   }
@@ -935,7 +964,6 @@ export default function Tasks() {
         ))}
       </div>
       {error && <p className="error">{error}</p>}
-      <EarnFlash earn={earnFlash} onDismiss={() => setEarnFlash(null)} />
       {!loaded && rows.length === 0 && <p className="muted">Loading…</p>}
       {loaded && categories.length > 0 && categoryId && (
         <FilterChips
@@ -957,7 +985,7 @@ export default function Tasks() {
                     void saveRename(activeCategory.id);
                   }}
                 >
-                  <input
+                  <TextField
                     type="text"
                     value={renameDraft}
                     autoFocus
@@ -971,29 +999,32 @@ export default function Tasks() {
                       }
                     }}
                   />
-                  <button
+                  <Button
                     type="submit"
-                    className="secondary"
+                    variant="secondary"
+                    size="sm"
                     disabled={renamingSaving || !renameDraft.trim()}
                   >
                     Save
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
-                    className="secondary"
+                    variant="secondary"
+                    size="sm"
                     disabled={renamingSaving}
                     onClick={() => setRenamingCategoryId(null)}
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </form>
               ) : (
                 <>
                   <h2 className="task-section-title">{activeCategory.name}</h2>
                   <span className="task-section-count">{sectionTasks.length}</span>
                   {activeCategory.kind === "misc" && !activeCategory.system && (
-                    <button
-                      type="button"
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="task-section-rename-btn"
                       aria-label={`Rename ${activeCategory.name}`}
                       onClick={() => startRename(activeCategory)}
@@ -1002,19 +1033,20 @@ export default function Tasks() {
                         <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
                         <path d="M13.5 6.5l3 3" />
                       </svg>
-                    </button>
+                    </Button>
                   )}
                 </>
               )}
             </div>
             {view === "open" && (
-              <button
-                type="button"
-                className="secondary task-section-add"
+              <Button
+                variant="secondary"
+                size="sm"
+                className="task-section-add"
                 onClick={() => setAddingCategory(activeCategory)}
               >
                 Add
-              </button>
+              </Button>
             )}
           </header>
           <div className="task-well">
@@ -1039,26 +1071,34 @@ export default function Tasks() {
               className="task-new-category"
               onSubmit={(event) => void onCreateCategory(event)}
             >
-              <input
+              <TextField
                 type="text"
                 value={newCategoryName}
                 placeholder="New category name"
                 onChange={(event) => setNewCategoryName(event.target.value)}
                 aria-label="New category name"
               />
-              <button
+              <Button
                 type="submit"
-                className="secondary"
+                variant="secondary"
+                size="sm"
                 disabled={creatingCategory || !newCategoryName.trim()}
               >
                 {creatingCategory ? "Adding…" : "Add category"}
-              </button>
+              </Button>
             </form>
           )}
         </div>
       )}
       {loaded && categories.length === 0 && (
         <p className="muted">No task categories yet.</p>
+      )}
+      {earnFlash?.placement === "toast" && (
+        <EarnFlash
+          earn={earnFlash.earn}
+          placement="toast"
+          onDismiss={() => setEarnFlash(null)}
+        />
       )}
       {addingCategory && (
         <ModalLayer

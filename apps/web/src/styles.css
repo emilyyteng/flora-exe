@@ -1799,20 +1799,39 @@ button.secondary.ui-button.rich-text-tool.is-active:hover {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.earn-flash-dismiss {
+button.secondary.ui-button.earn-flash-dismiss {
   border: none;
   background: transparent;
   color: var(--text-muted);
   font-size: 1.1rem;
   line-height: 1;
   padding: 0.1rem 0.35rem;
-  cursor: pointer;
-  box-shadow: none !important;
+  min-height: 0;
+  box-shadow: none;
 }
-.earn-flash-dismiss:hover {
+button.secondary.ui-button.earn-flash-dismiss:not(:disabled):hover {
   color: var(--text);
   background: transparent;
-  box-shadow: none !important;
+  border-color: transparent;
+  box-shadow: none;
+}
+/* Viewport toast fallback (F09 M1-10 / M2-03) when no stable earn anchor. */
+.earn-flash-toast-host {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  width: min(28rem, calc(100vw - 1.5rem));
+  pointer-events: none;
+}
+.earn-flash-toast-host .earn-flash {
+  pointer-events: auto;
+  margin: 0;
+  box-shadow: var(--shadow-soft);
+}
+.earn-flash.earn-flash-toast {
+  margin: 0;
 }
 
 /* One-time notice (design-system.md): persists seen in localStorage; × hides for this view. */

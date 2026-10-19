@@ -179,7 +179,7 @@ Locked via `/prototype/f09/patterns` surface B (verdict 2026-10-15).
 | **`EarnFlash`** | **Near the control that earned** (inline under the row / action cluster, or a small portal anchored to that control). Must appear in the current viewport without scrolling to the page top. **Fallback:** sticky viewport toast when the action has no stable anchor (e.g. after modal close). Reject page-top-only and scroll-into-view jerks as the default. |
 | **`OneTimeNotice`** | Does **not** share the near-control rule. Event/result chrome may stay at the **host section top** (preferably still in that section’s first viewport). |
 
-Apply near-control EarnFlash on Tasks / Progress hosts in a follow apply ticket or M2 wave; pattern is locked here.
+**Tasks** applies near-control / toast fallback (**M2-03**). Progress hosts still migrate in M2-07.
 
 ### Compact long pages (F09 M1-11 · R.10 / Q11)
 
