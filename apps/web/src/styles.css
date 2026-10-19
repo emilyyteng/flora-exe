@@ -846,9 +846,7 @@ a.external .ext-icon { font-size: 0.75rem; }
   white-space: nowrap;
   flex-shrink: 0;
 }
-.application-apply-by-field input {
-  font-size: 0.8125rem;
-  padding: 0.32rem 0.55rem;
+.application-apply-by-field .ui-field:not([type="date"]):not([type="time"]) {
   min-width: 0;
 }
 .application-card-footer.row-actions {
@@ -881,19 +879,8 @@ a.external .ext-icon { font-size: 0.75rem; }
   flex: 1 1 auto;
   min-width: 0;
 }
-.application-card-apply-by button.secondary {
-  font-size: 0.75rem;
-  padding: 0.32rem 0.7rem;
-}
 .application-card-apply-by .application-apply-by-field {
   gap: 0;
-}
-.application-card-apply-by select.application-apply-by-kind,
-.application-card-apply-by input[type="date"],
-.application-card-apply-by input[type="time"] {
-  font-size: 0.75rem;
-  padding: 0.28rem 0.4rem;
-  line-height: 1.2;
 }
 .application-card-apply-by select.application-apply-by-kind {
   max-width: 6.5rem;
@@ -1217,9 +1204,6 @@ button.secondary.ui-button.task-section-rename-btn:not(:disabled):hover {
   align-items: center;
 }
 .task-move-select {
-  font-size: 0.75rem;
-  padding: 0.28rem 0.4rem;
-  line-height: 1.2;
   max-width: 6.5rem;
 }
 .visually-hidden {

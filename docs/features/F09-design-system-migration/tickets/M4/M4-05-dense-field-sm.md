@@ -1,6 +1,6 @@
 # M4-05: Dense Field `sm` aligned with Button `sm`
 
-**Status:** Ready
+**Status:** Done
 **Blocked by:** (none)
 **Implements:** R.1, R.15 (from `../../spec.md`); extends Field sizes in `docs/design-system.md`
 **Type:** build
@@ -15,13 +15,13 @@
 - `Button size="sm"` uses different metrics than Field md
 - Native `date` / `time` chrome often reads taller than a text button even with matching padding
 
-Design system today: Field variants are only **`md`** and **`num`** (compact number). There is **no** shared dense height for selects/text fields next to `Button sm` in card action rows.
+Design system previously: Field variants were only **`md`** and **`num`**. No shared dense height for selects/text fields next to `Button sm` in card action rows.
 
 ## Evidence
 
 - Field md: [`ui.css`](../../../../../apps/web/src/ui/ui.css) `.ui-field` — `font-size: 0.875rem`, `padding: 0.45rem 0.6rem`
 - Button sm: `.ui-button-sm` — `font-size: 0.75rem`, `padding: 0.28rem 0.65rem`
-- Tasks compact leftovers: `.application-card-apply-by select…`, `.task-move-select` in [`styles.css`](../../../../../apps/web/src/styles.css)
+- Global `input[type="date|time"]` shim beats single-class Field size rules (specificity)
 
 ## What to build
 
@@ -29,26 +29,26 @@ Design system today: Field variants are only **`md`** and **`num`** (compact num
 2. Short **dense action row** note in `docs/design-system.md` (card footers: Button sm + Field sm together; prefer one shared height).
 3. Apply on **Tasks** footer controls (deadline kind/date/time, Save, category move, Complete / Edit subtasks row) and remove obsolete Tasks-only compact overrides that fight `.ui-field`.
 
-**Out of scope:** `fieldSize="num"` behavior change; full-app field migration; icon Button size (**M4-04**).
+**Out of scope:** `fieldSize="num"` behavior change; full-app field migration; icon Button size (**M4-04**); retiring the bare-field shim (follow-up M4 ticket).
 
 ## Acceptance criteria
 
-- [ ] `fieldSize="sm"` exists and is documented next to `md` / `num`
-- [ ] Visual height of Field sm ≈ Button sm in a horizontal dense row (spot-check Tasks footer)
-- [ ] Tasks category select, deadline controls, and adjacent buttons no longer alternate thick/thin in an obvious way
-- [ ] Cascade hacks that only partially compact some controls are removed or reduced to non-size concerns
-- [ ] `npm run check` passes
+- [x] `fieldSize="sm"` exists and is documented next to `md` / `num`
+- [x] Visual height of Field sm ≈ Button sm in a horizontal dense row (user locked Tasks footer)
+- [x] Tasks category select, deadline controls, and adjacent buttons use Field sm + Button sm
+- [x] Cascade hacks that only partially compact some controls are removed or reduced to non-size concerns
+- [x] `npm run check` passes
 
 ## Edge cases
 
-- Native date/time: document if browser chrome still adds a few pixels; prefer shared padding/font even if UA min-height differs slightly
+- Native date/time: shared border-box height; select uses block padding 0 so text/chevron are not clipped; date/time use `width: auto` so stretch does not open text→icon gap
 - Disabled / focus rings still meet Field policy
 - `num` remains for short numeric boxes (not a substitute for sm selects)
 
 ## Tests
 
-- [ ] Manual: Tasks open-card footer — kind, date, time, Save, Complete, category select read as one dense band
-- [ ] `npm run check`
+- [x] Manual: Tasks open-card footer — kind, date, time, Save, Complete, category select read as one dense band (user confirmed)
+- [x] `npm run check`
 
 ## Reuse notes
 
@@ -56,14 +56,14 @@ Design system today: Field variants are only **`md`** and **`num`** (compact num
 
 ## Definition of done
 
-- [ ] Acceptance criteria met and checked
-- [ ] `npm run check` passes
-- [ ] Follows `docs/design-system.md`
-- [ ] Reuse check done
-- [ ] No production imports of prototype code
-- [ ] Committed as `F09 M4-05: …`
-- [ ] End-of-task report given
+- [x] Acceptance criteria met and checked
+- [x] `npm run check` passes
+- [x] Follows `docs/design-system.md`
+- [x] Reuse check done
+- [x] No production imports of prototype code
+- [x] Committed as `F09 M4-05: …`
+- [x] End-of-task report given
 
 ## Verification notes
 
-(pending)
+User locked Tasks footer visuals 2026-10-19. Field sm + Button sm share `height: calc(0.75rem * 1.3 + 0.28rem * 2 + 2px)`. Select sm: no block padding. Date/time sm: `width: auto` (no field-sizing / indicator overrides). Footer order: category → kind → date → time → Save | Edit subtasks → Complete. Commit hash filled in board follow-up.

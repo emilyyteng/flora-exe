@@ -763,9 +763,29 @@ export default function Tasks() {
                 className="application-card-apply-by"
                 onSubmit={(event) => void saveDueAt(event, row)}
               >
+                {!application && (
+                  <label className="task-move-field">
+                    <span className="visually-hidden">Move to category</span>
+                    <SelectField
+                      fieldSize="sm"
+                      className="task-move-select"
+                      value={row.categoryId}
+                      disabled={pendingId === row.id}
+                      aria-label="Move to category"
+                      onChange={(event) => void moveTask(row, event.target.value)}
+                    >
+                      {miscCategories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </SelectField>
+                  </label>
+                )}
                 <label className="application-apply-by-field">
                   <span className="visually-hidden">Date kind</span>
                   <SelectField
+                    fieldSize="sm"
                     className="application-apply-by-kind"
                     value={dueDraft.kind}
                     disabled={pendingId === row.id || !dueDraft.date}
@@ -782,6 +802,7 @@ export default function Tasks() {
                   <span className="visually-hidden">Date</span>
                   <TextField
                     type="date"
+                    fieldSize="sm"
                     value={dueDraft.date}
                     disabled={pendingId === row.id}
                     aria-label="Due date"
@@ -792,6 +813,7 @@ export default function Tasks() {
                   <span className="visually-hidden">Time</span>
                   <TextField
                     type="time"
+                    fieldSize="sm"
                     value={dueDraft.time}
                     disabled={pendingId === row.id || !dueDraft.date}
                     aria-label="Due time"
@@ -852,24 +874,6 @@ export default function Tasks() {
                 >
                   {application ? "Mark applied" : "Complete"}
                 </Button>
-              )}
-              {view === "open" && !application && (
-                <label className="task-move-field">
-                  <span className="visually-hidden">Move to category</span>
-                  <SelectField
-                    className="task-move-select"
-                    value={row.categoryId}
-                    disabled={pendingId === row.id}
-                    aria-label="Move to category"
-                    onChange={(event) => void moveTask(row, event.target.value)}
-                  >
-                    {miscCategories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </SelectField>
-                </label>
               )}
               {view === "completed" && !application && (
                 <label className="task-completed-actual-edit">
