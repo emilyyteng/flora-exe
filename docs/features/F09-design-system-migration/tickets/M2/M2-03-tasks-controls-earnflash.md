@@ -1,7 +1,7 @@
 # M2-03: Tasks controls + near-control EarnFlash
 
 **Status:** Ready
-**Blocked by:** M2-02
+**Blocked by:** (none) — M2-02 Done
 **Implements:** R.1, R.9, R2.1 (from `../../spec.md`); EarnFlash placement in `docs/design-system.md`
 **Type:** build
 

@@ -59,19 +59,19 @@ No open tickets.
 
 | Ticket | Title | Type | Status | Notes |
 |--------|-------|------|--------|-------|
-| [M2-02](./tickets/M2/M2-02-tasks-compaction-layout.md) | Tasks compaction layout | build | Ready | Unblocked; R.10 |
-| [M2-03](./tickets/M2/M2-03-tasks-controls-earnflash.md) | Tasks controls + near-control EarnFlash | build | Ready | Blocked by M2-02; R.9 |
+| [M2-03](./tickets/M2/M2-03-tasks-controls-earnflash.md) | Tasks controls + near-control EarnFlash | build | Ready | Unblocked; R.9 |
 | [M2-04](./tickets/M2/M2-04-jobs-chrome-pager-notice.md) | Jobs chrome, `Pager`, ranking `OneTimeNotice` | build | Draft | After F08 M3; R.6/R.7/R.8 |
 | [M2-05](./tickets/M2/M2-05-applications-chrome.md) | Applications → `ChromeTab` + containerized chrome | build | Draft | After F08 M3 |
 | [M2-06](./tickets/M2/M2-06-interviews-chrome.md) | Interviews → `ChromeTab` + containerized chrome | build | Draft | After F08 M3 |
 | [M2-07](./tickets/M2/M2-07-progress-apply-audit.md) | Progress apply + This week audit/gaps | build | Draft | After F08 M3; not a This week redesign |
 
 <details>
-<summary>Done (1)</summary>
+<summary>Done (2)</summary>
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
 | [M2-01](./tickets/M2/M2-01-shared-pager.md) | Shared `Pager` primitive | `cd4b2ad` |
+| [M2-02](./tickets/M2/M2-02-tasks-compaction-layout.md) | Tasks compaction layout | |
 
 </details>
 

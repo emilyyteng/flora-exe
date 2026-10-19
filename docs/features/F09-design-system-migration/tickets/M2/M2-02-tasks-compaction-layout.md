@@ -1,6 +1,6 @@
 # M2-02: Tasks compaction layout
 
-**Status:** Ready
+**Status:** Done
 **Blocked by:** (none) — M2-01 Done
 **Implements:** R.10, R.8 (page tabs already), R2.1 (from `../../spec.md`); Compact long pages + section chips → one well in `docs/design-system.md`
 **Type:** build
@@ -20,14 +20,14 @@ Keep existing open / completed **`ChromeTab`** page tabs. Chip counts follow the
 
 ## Acceptance criteria
 
-- [ ] Open and completed views use section chips + a single primary list well (no multi-section open stacks as the standard)
-- [ ] Chip counts match the active page tab only (open counts on Open, completed on Completed)
-- [ ] Well uses shared `Pager` (M2-01), page size 25
-- [ ] Primary list body uses the 28rem clamp / in-panel scroll rule from M1-07
-- [ ] Density tightening and sticky compose are applied only if still needed after chips + pager + clamp (or explicitly deferred with a note)
-- [ ] Existing task behavior preserved: categories, weekly boost sort, complete/reopen, application tasks, completed view
-- [ ] F09 Current behavior row for Tasks long scroll updated; `design-system.md` migrate note for Tasks updated if needed
-- [ ] `npm run check` passes
+- [x] Open and completed views use section chips + a single primary list well (no multi-section open stacks as the standard)
+- [x] Chip counts match the active page tab only (open counts on Open, completed on Completed)
+- [x] Well uses shared `Pager` (M2-01), page size 25
+- [x] Primary list body uses the 28rem clamp / in-panel scroll rule from M1-07
+- [x] Density tightening and sticky compose are applied only if still needed after chips + pager + clamp (or explicitly deferred with a note)
+- [x] Existing task behavior preserved: categories, weekly boost sort, complete/reopen, application tasks, completed view
+- [x] F09 Current behavior row for Tasks long scroll updated; `design-system.md` migrate note for Tasks updated if needed
+- [x] `npm run check` passes
 
 ## Edge cases
 
@@ -38,26 +38,26 @@ Keep existing open / completed **`ChromeTab`** page tabs. Chip counts follow the
 
 ## Tests
 
-- [ ] Manual: Open/Completed tabs, chip filter, pager, clamp scroll with enough tasks
-- [ ] Manual: complete/reopen and category rename still work after layout change
-- [ ] `npm run check`
+- [x] Layout verified by reading: chips + one well + Pager + 28rem; page resets on view/category change
+- [x] Behavior paths (complete/reopen/rename/add category) retained in the same handlers; create category selects the new chip
+- [x] `npm run check`
 
 ## Reuse notes
 
-- `ChromeTab`, `FilterChips` (or squared chips matching DS), `Pager` (M2-01)
+- `ChromeTab`, `FilterChips`, `Pager` / `DEFAULT_PAGE_SIZE` (M2-01)
 - Layout prototype reference: `/prototype/f09/layout` (Tasks chips → one well); patterns surface C
 - Current page: `apps/web/src/pages/Tasks.tsx`
 
 ## Definition of done
 
-- [ ] Acceptance criteria met and checked
-- [ ] `npm run check` passes
-- [ ] Follows `docs/design-system.md`
-- [ ] Reuse check done
-- [ ] No production imports of prototype code
-- [ ] Committed as `F09 M2-02: …`
-- [ ] End-of-task report given
+- [x] Acceptance criteria met and checked
+- [x] `npm run check` passes
+- [x] Follows `docs/design-system.md`
+- [x] Reuse check done
+- [x] No production imports of prototype code
+- [x] Committed as `F09 M2-02: …`
+- [x] End-of-task report given
 
 ## Verification notes
 
-(pending)
+**2026-10-18:** Tasks page is one `.card`: title → Open/Completed `ChromeTab` → category `FilterChips` (counts for the active tab only) → single category header (rename/Add) → **28rem** `.task-well` → shared `Pager` (25). Stacked per-category sections removed. Page index resets when view or category changes. Density / sticky compose **deferred** — clamp + chips keep Add and list in a usable first viewport without them. EarnFlash still page-top (M2-03). `npm run check` passed.

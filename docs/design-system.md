@@ -168,7 +168,7 @@ Locked via `/prototype/f09/patterns` surface A (verdict 2026-10-15).
 
 **Special case:** calendar-anchored time series (Progress Past work completions) may use a day / **7-day window** instead of numbered pages — Progress-only, not the general list rule.
 
-**Migrate next:** Tasks well (M2-02); Jobs `.pager` → shared `Pager` (drop jump select, M2-04); completions diary and similar logs (M2-07); long boards inside 28rem wells (with M1-07).
+**Migrate next:** Jobs `.pager` → shared `Pager` (drop jump select, M2-04); completions diary and similar logs (M2-07). Tasks well migrated in M2-02.
 
 ### EarnFlash / notice placement (F09 M1-10 · R.9 / Q10)
 
@@ -183,7 +183,7 @@ Apply near-control EarnFlash on Tasks / Progress hosts in a follow apply ticket 
 
 ### Compact long pages (F09 M1-11 · R.10 / Q11)
 
-Locked via `/prototype/f09/patterns` surface C (verdict 2026-10-15). **Tasks** is the first migrate target (M2).
+Locked via `/prototype/f09/patterns` surface C (verdict 2026-10-15). **Tasks** migrated in **M2-02** (chips → one 28rem well → `Pager`; density / sticky compose deferred as not needed after 1–3).
 
 Ordered tactics:
 

@@ -146,6 +146,18 @@ button.secondary.ui-button.ui-filter-chip.is-active:not(:disabled):hover {
   font-weight: 600;
 }
 
+.ui-filter-chip-count {
+  margin-left: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+button.secondary.ui-button.ui-filter-chip.is-active .ui-filter-chip-count {
+  color: var(--ink);
+}
+
 /* —— Segmented —— */
 .ui-segmented {
   display: inline-flex;
