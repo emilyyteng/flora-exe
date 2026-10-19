@@ -53,7 +53,7 @@ No open tickets.
 
 **Milestone status:** Not started
 
-Tickets after M1. Expected: Tasks compaction (R.10 / M1-11 tactics); **Jobs / Applications / Interviews → `ChromeTab` + containerized title→tabs→squared filter chips** + shared `Pager` (drop jump select); Jobs banner → `OneTimeNotice` (R.6); Progress apply M1-07 height + EarnFlash near-control (M1-10) + This week composition.
+Tickets after M1. Expected: Tasks compaction (R.10 / M1-11 tactics); **Jobs / Applications / Interviews → `ChromeTab` + containerized title→tabs→chips anatomy** + shared `Pager` (drop jump select); Jobs banner → `OneTimeNotice` (R.6); Progress apply M1-07 height + EarnFlash near-control (M1-10) + This week composition. Legacy chip *look* (Jobs loc / Past work kind → shared `FilterChips`) is **M4-03**, so it need not wait on the full M2 chrome wave.
 
 <details>
 <summary>Done (0)</summary>
@@ -91,6 +91,7 @@ Ad hoc design-system cleanups and extensions that don’t fit M2 surface waves o
 |--------|-------|------|--------|-------|
 | [M4-01](./tickets/M4/M4-01-heatmap-color-contrast.md) | Heatmap colors — more contrast on lower activity | build | Draft | Pale / low-variation heat scale |
 | [M4-02](./tickets/M4/M4-02-negative-points-notifications.md) | Spike: notifications for negative point events | spike | Draft | Moved from MT-11 |
+| [M4-03](./tickets/M4/M4-03-migrate-legacy-filter-chips.md) | Migrate legacy filter chips to shared `FilterChips` | build | Draft | Jobs loc + Past work kind; helper shipped F08 M6-04 |
 
 <details>
 <summary>Done (0)</summary>

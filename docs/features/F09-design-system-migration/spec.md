@@ -2,7 +2,7 @@
 
 **ID:** F09
 **Status:** Active
-**Last updated:** 2026-10-16
+**Last updated:** 2026-10-18
 
 ## Problem
 
@@ -95,6 +95,7 @@ This table is a **parked defect log**, not a complete M0 checklist. M0 must stil
 | ~~Progress heatmaps used navy-peak JS RGB scale~~ | [`intensityScale`](../../../apps/web/src/features/progress/intensityScale.ts) | Conforms (M1-14) | Vivid-rose `--heat-*` stops |
 | Heat scale too pale / little variation on lower activity days | [`intensityScale`](../../../apps/web/src/features/progress/intensityScale.ts), `--heat-*` | Conflicts R0.3 (readability) | Ticketed **M4-01** |
 | Negative point events: habit uncheck silent; LC decrement may flash mint EarnFlash; no shared reverse-banner standard | EarnFlash hosts; F11 Habits strip | Unspecified vs R.9 / banner rules | Spike **M4-02** (from MT-11) |
+| Shared squared `FilterChips` exists; Jobs location still pill/blue `.jobs-loc-chip`; Past work Completions kind still `.ledger-subtab` | [`FilterChips.tsx`](../../../apps/web/src/ui/FilterChips.tsx); [`LocationFilterChips.tsx`](../../../apps/web/src/features/jobs/LocationFilterChips.tsx); [`LedgerCompletionsPanel.tsx`](../../../apps/web/src/features/progress/LedgerCompletionsPanel.tsx) | Conflicts R.8 / Filter chips | Ticketed **M4-03** |
 | Most workflow pages wrap content in raised `.card` panels; Rewards often open-canvas; Progress hybrid flat subnav + carded body | `.card` in `styles.css`; [`RewardsLayout.tsx`](../../../apps/web/src/features/rewards/RewardsLayout.tsx); Progress shell + pages | Conflicts (M0 all-carded) | All features carded per M0; migrate Rewards open canvas in surface waves |
 
 ## Out of scope (for now)
@@ -164,3 +165,4 @@ This table is a **parked defect log**, not a complete M0 checklist. M0 must stil
 - **2026-10-15 (M1-13):** Q6 answered — `check:ui` script in `npm run check` for bare buttons (full tree) and unclassed fields (Home tree); `ui/` + prototype exempt.
 - **2026-10-15 (M1 close):** M1 Done — primitives, patterns, Home pilot, `check:ui` enforcement. Achievement unlock ModalLayer debt → **M3-01**. Next: M2 surface waves.
 - **2026-10-16:** Added **M4 Cleanup & extensions** for ad hoc system polish. **M4-01** heatmap contrast; **M4-02** negative-points notifications spike (moved from maintenance MT-11).
+- **2026-10-18:** Shared squared `FilterChips` shipped with F08 M6-04 (Board departures). Legacy Jobs location pills and Past work Completions `.ledger-subtab` filters ticketed as **M4-03** so chip look need not wait on the M2 ChromeTab surface wave.
