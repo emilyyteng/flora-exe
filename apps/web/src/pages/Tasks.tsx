@@ -43,6 +43,9 @@ import {
   ChromeTab,
   DEFAULT_PAGE_SIZE,
   FilterChips,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Pager,
   SelectField,
   TextField,
@@ -107,6 +110,7 @@ export default function Tasks() {
   const [error, setError] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [addingCategory, setAddingCategory] = useState<TaskCategoryRow | null>(null);
+  const [createCategoryOpen, setCreateCategoryOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [creatingCategory, setCreatingCategory] = useState(false);
   const [renamingCategoryId, setRenamingCategoryId] = useState<string | null>(null);
@@ -216,15 +220,25 @@ export default function Tasks() {
     };
   }, [view]);
 
+  /** Applications never appear as completed tasks — hide that chip on Completed. */
+  const visibleCategories =
+    view === "completed"
+      ? categories.filter((c) => c.kind !== "application")
+      : categories;
+
   useEffect(() => {
-    if (categories.length === 0) {
+    const visible =
+      view === "completed"
+        ? categories.filter((c) => c.kind !== "application")
+        : categories;
+    if (visible.length === 0) {
       setCategoryId(null);
       return;
     }
-    if (categoryId && categories.some((c) => c.id === categoryId)) return;
-    const withTasks = categories.find((c) => rows.some((r) => r.categoryId === c.id));
-    setCategoryId((withTasks ?? categories[0]!).id);
-  }, [categories, rows, categoryId]);
+    if (categoryId && visible.some((c) => c.id === categoryId)) return;
+    const withTasks = visible.find((c) => rows.some((r) => r.categoryId === c.id));
+    setCategoryId((withTasks ?? visible[0]!).id);
+  }, [categories, rows, categoryId, view]);
 
   useEffect(() => {
     setListPage(1);
@@ -519,15 +533,19 @@ export default function Tasks() {
 
   const miscCategories = categories.filter((c) => c.kind === "misc");
 
-  async function onCreateCategory(event: FormEvent) {
-    event.preventDefault();
+  function closeCreateCategoryModal() {
+    setCreateCategoryOpen(false);
+    setNewCategoryName("");
+  }
+
+  async function confirmCreateCategory() {
     const name = newCategoryName.trim();
     if (!name) return;
     setCreatingCategory(true);
     setError(null);
     try {
       const created = await createTaskCategory(name);
-      setNewCategoryName("");
+      closeCreateCategoryModal();
       setCategoryId(created.id);
       setListPage(1);
       invalidateListCache("tasks:");
@@ -932,7 +950,7 @@ export default function Tasks() {
   const pageTasks = sectionTasks.slice(pageStart, pageStart + DEFAULT_PAGE_SIZE);
   const sectionEmpty = loaded && activeCategory !== null && sectionTasks.length === 0;
 
-  const categoryChipOptions = categories.map((category) => {
+  const categoryChipOptions = visibleCategories.map((category) => {
     const n = rows.filter((row) => row.categoryId === category.id).length;
     return {
       value: category.id,
@@ -948,24 +966,37 @@ export default function Tasks() {
   return (
     <section className="card tasks-page">
       <h1 className="tasks-page-title">Tasks</h1>
-      <div className="ui-chrome-tabs" role="tablist" aria-label="Tasks">
-        {TABS.map((tab) => (
-          <ChromeTab
-            key={tab}
-            size="page"
-            active={tab === view}
-            aria-current={tab === view ? "page" : undefined}
-            aria-label={`${tab}, ${counts[tab]} task${counts[tab] === 1 ? "" : "s"}`}
-            onClick={() => setSearchParams(tab === "open" ? {} : { view: tab })}
-          >
-            <span>{tab === "open" ? "open" : "completed"}</span>
-            <span className="ui-chrome-tab-count">{counts[tab]}</span>
-          </ChromeTab>
-        ))}
+      <div className="tasks-tabs-row">
+        <div className="ui-chrome-tabs" role="tablist" aria-label="Tasks">
+          {TABS.map((tab) => (
+            <ChromeTab
+              key={tab}
+              size="page"
+              active={tab === view}
+              aria-current={tab === view ? "page" : undefined}
+              aria-label={`${tab}, ${counts[tab]} task${counts[tab] === 1 ? "" : "s"}`}
+              onClick={() => setSearchParams(tab === "open" ? {} : { view: tab })}
+            >
+              <span>{tab === "open" ? "open" : "completed"}</span>
+              <span className="ui-chrome-tab-count">{counts[tab]}</span>
+            </ChromeTab>
+          ))}
+        </div>
+        <Button
+          variant="primary"
+          size="sm"
+          className="tasks-add-category"
+          onClick={() => {
+            setNewCategoryName("");
+            setCreateCategoryOpen(true);
+          }}
+        >
+          Add category +
+        </Button>
       </div>
       {error && <p className="error">{error}</p>}
       {!loaded && rows.length === 0 && <p className="muted">Loading…</p>}
-      {loaded && categories.length > 0 && categoryId && (
+      {loaded && visibleCategories.length > 0 && categoryId && (
         <FilterChips
           label="Category"
           value={categoryId}
@@ -974,91 +1005,96 @@ export default function Tasks() {
         />
       )}
       {loaded && activeCategory && (
-        <div className="task-board">
-          <header className="task-section-header">
-            <div className="task-section-title-row">
-              {renamingCategoryId === activeCategory.id ? (
-                <form
-                  className="task-section-rename"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    void saveRename(activeCategory.id);
-                  }}
-                >
-                  <TextField
-                    type="text"
-                    value={renameDraft}
-                    autoFocus
-                    aria-label="Category name"
-                    disabled={renamingSaving}
-                    onChange={(event) => setRenameDraft(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Escape") {
-                        event.preventDefault();
-                        setRenamingCategoryId(null);
-                      }
+        <>
+          <div
+            className={
+              pageCount <= 1 ? "task-board task-board-no-pager" : "task-board"
+            }
+          >
+            <header className="task-section-header">
+              <div className="task-section-title-row">
+                {renamingCategoryId === activeCategory.id ? (
+                  <form
+                    className="task-section-rename"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      void saveRename(activeCategory.id);
                     }}
-                  />
-                  <Button
-                    type="submit"
-                    variant="secondary"
-                    size="sm"
-                    disabled={renamingSaving || !renameDraft.trim()}
                   >
-                    Save
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    disabled={renamingSaving}
-                    onClick={() => setRenamingCategoryId(null)}
-                  >
-                    Cancel
-                  </Button>
-                </form>
-              ) : (
-                <>
-                  <h2 className="task-section-title">{activeCategory.name}</h2>
-                  <span className="task-section-count">{sectionTasks.length}</span>
-                  {activeCategory.kind === "misc" && !activeCategory.system && (
+                    <TextField
+                      type="text"
+                      value={renameDraft}
+                      autoFocus
+                      aria-label="Category name"
+                      disabled={renamingSaving}
+                      onChange={(event) => setRenameDraft(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                          event.preventDefault();
+                          setRenamingCategoryId(null);
+                        }
+                      }}
+                    />
                     <Button
-                      variant="ghost"
+                      type="submit"
+                      variant="secondary"
                       size="sm"
-                      className="task-section-rename-btn"
-                      aria-label={`Rename ${activeCategory.name}`}
-                      onClick={() => startRename(activeCategory)}
+                      disabled={renamingSaving || !renameDraft.trim()}
                     >
-                      <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
-                        <path d="M13.5 6.5l3 3" />
-                      </svg>
+                      Save
                     </Button>
-                  )}
-                </>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      disabled={renamingSaving}
+                      onClick={() => setRenamingCategoryId(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </form>
+                ) : (
+                  <>
+                    <h2 className="task-section-title">{activeCategory.name}</h2>
+                    {activeCategory.kind === "misc" && !activeCategory.system && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="task-section-rename-btn"
+                        aria-label={`Rename ${activeCategory.name}`}
+                        onClick={() => startRename(activeCategory)}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
+                          <path d="M13.5 6.5l3 3" />
+                        </svg>
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
+              {view === "open" && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="task-section-add"
+                  onClick={() => setAddingCategory(activeCategory)}
+                >
+                  Add
+                </Button>
+              )}
+            </header>
+            <div className="task-well">
+              {sectionEmpty ? (
+                <p className="muted task-well-empty">
+                  {view === "open"
+                    ? "No open tasks in this category."
+                    : "Nothing completed in this category yet."}
+                </p>
+              ) : (
+                pageTasks.map((row) => renderTaskCard(row))
               )}
             </div>
-            {view === "open" && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="task-section-add"
-                onClick={() => setAddingCategory(activeCategory)}
-              >
-                Add
-              </Button>
-            )}
-          </header>
-          <div className="task-well">
-            {sectionEmpty ? (
-              <p className="muted task-well-empty">
-                {view === "open"
-                  ? "No open tasks in this category."
-                  : "Nothing completed in this category yet."}
-              </p>
-            ) : (
-              pageTasks.map((row) => renderTaskCard(row))
-            )}
           </div>
           <Pager
             page={effectivePage}
@@ -1066,32 +1102,14 @@ export default function Tasks() {
             onPage={setListPage}
             label={`${activeCategory.name} pages`}
           />
-          {view === "open" && (
-            <form
-              className="task-new-category"
-              onSubmit={(event) => void onCreateCategory(event)}
-            >
-              <TextField
-                type="text"
-                value={newCategoryName}
-                placeholder="New category name"
-                onChange={(event) => setNewCategoryName(event.target.value)}
-                aria-label="New category name"
-              />
-              <Button
-                type="submit"
-                variant="secondary"
-                size="sm"
-                disabled={creatingCategory || !newCategoryName.trim()}
-              >
-                {creatingCategory ? "Adding…" : "Add category"}
-              </Button>
-            </form>
-          )}
-        </div>
+        </>
       )}
-      {loaded && categories.length === 0 && (
-        <p className="muted">No task categories yet.</p>
+      {loaded && visibleCategories.length === 0 && (
+        <p className="muted">
+          {view === "completed"
+            ? "No completed-task categories yet."
+            : "No task categories yet."}
+        </p>
       )}
       {earnFlash?.placement === "toast" && (
         <EarnFlash
@@ -1099,6 +1117,51 @@ export default function Tasks() {
           placement="toast"
           onDismiss={() => setEarnFlash(null)}
         />
+      )}
+      {createCategoryOpen && (
+        <ModalLayer
+          className="modal modal-compact"
+          labelledBy="create-category-title"
+          onClose={closeCreateCategoryModal}
+          dirty={newCategoryName.trim().length > 0}
+        >
+          <ModalHeader id="create-category-title" title="New category" />
+          <ModalBody>
+            <label className="tasks-create-category-label">
+              Name
+              <TextField
+                value={newCategoryName}
+                maxLength={80}
+                placeholder="e.g. School"
+                autoFocus
+                disabled={creatingCategory}
+                onChange={(event) => setNewCategoryName(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    void confirmCreateCategory();
+                  }
+                }}
+              />
+            </label>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="secondary"
+              disabled={creatingCategory}
+              onClick={closeCreateCategoryModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              disabled={creatingCategory || !newCategoryName.trim()}
+              onClick={() => void confirmCreateCategory()}
+            >
+              {creatingCategory ? "Creating…" : "Create"}
+            </Button>
+          </ModalFooter>
+        </ModalLayer>
       )}
       {addingCategory && (
         <ModalLayer

@@ -115,6 +115,36 @@ a:hover {
 
 .shell { max-width: var(--shell-max); margin: 0 auto; padding: 1.5rem; }
 
+/*
+ * Tasks: lock the page to the viewport — no document scroll.
+ * Shell bottom padding keeps a 24px gap from the screen edge; the task well
+ * is the only scrollport so the pager stays on-screen.
+ */
+body:has(.tasks-page) {
+  height: 100dvh;
+  overflow: hidden;
+}
+body:has(.tasks-page) .shell {
+  box-sizing: border-box;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+}
+body:has(.tasks-page) .shell > .demo-banner,
+body:has(.tasks-page) .shell > header.top {
+  flex: 0 0 auto;
+}
+body:has(.tasks-page) .shell > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .demo-banner {
   margin: 0 0 1rem;
   padding: 0.65rem 0.9rem;
@@ -964,22 +994,38 @@ a.external .ext-icon { font-size: 0.75rem; }
 .task-card-toolbar .task-duplicate-btn {
   position: static;
 }
-.task-edit-btn,
-.task-duplicate-btn {
+/*
+ * Icon toolbars keep a fixed 1.65rem hit target. `Button` sm/md padding is for
+ * labeled controls and would crush the SVG if it wins the cascade (ui.css loads
+ * after this file). Match `button.secondary.ui-button*` so size stays stable.
+ */
+.task-card-toolbar button.secondary.ui-button.task-edit-btn,
+.task-card-toolbar button.secondary.ui-button.task-duplicate-btn,
+.task-card-toolbar button.secondary.ui-button.todo-remove-btn,
+button.secondary.ui-button.task-edit-btn,
+button.secondary.ui-button.task-duplicate-btn,
+button.secondary.ui-button.todo-remove-btn {
   width: 1.65rem;
   height: 1.65rem;
+  min-width: 1.65rem;
+  min-height: 1.65rem;
   padding: 0;
+  gap: 0;
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: none;
   display: grid;
   place-items: center;
   border-radius: var(--radius-soft-box);
+  font-size: 0;
+  line-height: 0;
 }
 .task-edit-btn:disabled,
-.task-duplicate-btn:disabled { opacity: 0.55; }
+.task-duplicate-btn:disabled,
+.todo-remove-btn:disabled { opacity: 0.55; }
 .task-edit-btn svg,
-.task-duplicate-btn svg {
+.task-duplicate-btn svg,
+.todo-remove-btn svg {
   width: 1rem;
   height: 1rem;
   fill: transparent;
@@ -988,10 +1034,13 @@ a.external .ext-icon { font-size: 0.75rem; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.task-edit-btn:hover:not(:disabled),
-.task-duplicate-btn:hover:not(:disabled) {
+button.secondary.ui-button.task-edit-btn:not(:disabled):hover,
+button.secondary.ui-button.task-duplicate-btn:not(:disabled):hover,
+button.secondary.ui-button.todo-remove-btn:not(:disabled):hover {
   background: var(--surface-2);
   border-color: var(--accent-pink);
+  color: var(--text);
+  box-shadow: none;
 }
 .task-category-pill {
   color: var(--text-muted);
@@ -1000,27 +1049,67 @@ a.external .ext-icon { font-size: 0.75rem; }
 }
 
 .tasks-page {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 .tasks-page-title {
+  flex: 0 0 auto;
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.35rem;
   font-weight: 600;
   color: var(--ink);
 }
-.task-board {
+.tasks-tabs-row {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.tasks-tabs-row .ui-chrome-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.tasks-add-category {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.tasks-page > .ui-filter-chips,
+.tasks-page > .error,
+.tasks-page > .muted {
+  flex: 0 0 auto;
+}
+.tasks-create-category-label {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.tasks-page > .ui-pager {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+.task-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   background: var(--surface);
   overflow: hidden;
 }
 .task-section-header {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1032,24 +1121,33 @@ a.external .ext-icon { font-size: 0.75rem; }
 .task-section-title-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   min-width: 0;
+  /* Shared row height = rename icon hit target */
+  min-height: 1.45rem;
 }
 .task-section-title {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-}
-.task-section-count {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  line-height: 1.45rem;
+  height: 1.45rem;
+  display: inline-flex;
+  align-items: center;
+  /*
+   * Cap-height of the heading sits above the geometric center of the icon.
+   * Nudge the label down so it optically shares the icon’s center line.
+   */
+  transform: translateY(0.2rem);
 }
 .task-section-add {
   flex: 0 0 auto;
 }
 .task-well {
-  height: 28rem;
-  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0.65rem 0.75rem 0.75rem;
   display: flex;
   flex-direction: column;
@@ -1058,18 +1156,12 @@ a.external .ext-icon { font-size: 0.75rem; }
 .task-well-empty {
   margin: 0;
 }
-.task-board .ui-pager {
-  margin: 0 0.75rem 0.75rem;
-  justify-content: flex-end;
-}
-.task-new-category {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.35rem 0.75rem 0.75rem;
-}
-.task-new-category input {
-  flex: 1 1 auto;
+/*
+ * No pager: keep a reserved band under the board inside .tasks-page so the
+ * board rim isn’t flush with the page card (pager’s usual footprint + gap).
+ */
+.task-board-no-pager {
+  margin-bottom: 1.3rem;
 }
 
 .task-section-rename {
@@ -1079,26 +1171,32 @@ a.external .ext-icon { font-size: 0.75rem; }
   flex: 1 1 auto;
   min-width: 0;
 }
-.task-section-rename input {
+.task-section-rename input,
+.task-section-rename .ui-field {
   flex: 1 1 auto;
   min-width: 8rem;
   font-size: 0.95rem;
 }
-.task-section-rename-btn {
+/* Same cascade issue as card toolbar icons — Button sm padding must not crush the SVG. */
+button.secondary.ui-button.task-section-rename-btn {
   flex: 0 0 auto;
   width: 1.45rem;
   height: 1.45rem;
+  min-width: 1.45rem;
+  min-height: 1.45rem;
   padding: 0;
+  gap: 0;
   border: none;
   background: transparent;
   box-shadow: none;
   display: grid;
   place-items: center;
   border-radius: var(--radius-soft-box);
-  cursor: pointer;
   color: var(--text-muted);
+  font-size: 0;
+  line-height: 0;
 }
-.task-section-rename-btn svg {
+button.secondary.ui-button.task-section-rename-btn svg {
   width: 0.9rem;
   height: 0.9rem;
   fill: transparent;
@@ -1107,9 +1205,11 @@ a.external .ext-icon { font-size: 0.75rem; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.task-section-rename-btn:hover {
-  color: var(--text);
+button.secondary.ui-button.task-section-rename-btn:not(:disabled):hover {
+  color: var(--ink);
   background: color-mix(in srgb, var(--text) 8%, transparent);
+  border-color: transparent;
+  box-shadow: none;
 }
 .task-move-field {
   margin: 0;
@@ -1822,7 +1922,7 @@ button.secondary.ui-button.earn-flash-dismiss:not(:disabled):hover {
   left: 50%;
   bottom: 1.25rem;
   transform: translateX(-50%);
-  width: min(28rem, calc(100vw - 1.5rem));
+  width: min(36rem, calc(100vw - 1.5rem));
   pointer-events: none;
 }
 .earn-flash-toast-host .earn-flash {
