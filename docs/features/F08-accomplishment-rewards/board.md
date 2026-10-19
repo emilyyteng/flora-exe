@@ -107,7 +107,7 @@ No open tickets.
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
-| [M7-14](./tickets/M7/M7-14-refundable-count-badge.md) | Show ×1 refundable badge on album cards | |
+| [M7-14](./tickets/M7/M7-14-refundable-count-badge.md) | Show ×1 refundable badge on album cards | `ed8f840` |
 | [M7-13](./tickets/M7/M7-13-gacha-pity-night-unlock.md) | Raise CE pity to 40; Night unlock at 3 copies | `5f4b0d2` |
 | [M7-12](./tickets/M7/M7-12-ce-animation-day-night.md) | CE animations on Day/Night toggle and detail select | `5367f19` |
 | [M7-11](./tickets/M7/M7-11-gacha-rate-simulation.md) | Gacha rate simulation test | `87e6ac6` |

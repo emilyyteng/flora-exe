@@ -43,4 +43,4 @@ Show `×N` for any refundable count ≥ 1 (including a single dupe past 6 kept c
 
 ## Verification notes
 
-Logic change only (`count > 1` → `count >= 1`). Commit hash filled in follow-up.
+Logic change only (`count > 1` → `count >= 1`). Ticket commit: `ed8f840`.
