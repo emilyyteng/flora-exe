@@ -55,4 +55,4 @@ Build the one-time notice as a reusable design-system variant (not one-off CSS),
 
 ## Verification notes
 
-Commit: see board. `GET /api/home` → `weeklyCongrats` from `weekly_goal_records` for last week (met only) + `metWeeksStreaks`. UI: `OneTimeNotice` + `WeeklyCongratsBanner` in the hero (M5-06 Q4 B); flame streak from 2 weeks inline. Seen key `weekly-congrats-seen:{weekStart}`.
+Commit: see board. `GET /api/home` → `weeklyCongrats` from `weekly_goal_records` for last week (met only) + `metWeeksStreaks`. UI: `OneTimeNotice` + `WeeklyCongratsBanner` in the hero (M5-06 Q4 B); flame streak from 1 week inline (clarified 2026-10-19). Seen key `weekly-congrats-seen:{weekStart}`.

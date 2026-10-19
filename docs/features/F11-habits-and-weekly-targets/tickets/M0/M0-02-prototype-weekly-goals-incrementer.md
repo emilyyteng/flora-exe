@@ -19,7 +19,7 @@ Every variant must satisfy every locked weekly requirement, including:
 - Adjacent incrementer: ± for **LC and each custom** weekly progress; **no apps ±**; **no today-LC** (R3.3, R3.8, R1.13)
 - Custom weeklies on Home Targets (Sunday / unmet pattern like apps/LC) (R3.2)
 - Name + target carry week to week; progress resets (show in mock copy or state) (R3.5)
-- Display-only weeks-in-a-row flame when met ≥2 weeks (R3.9)
+- Display-only weeks-in-a-row flame when met ≥1 week (R3.9; clarified 2026-10-19)
 - Active vs archived look meaningfully different (R3.7; may inherit strip language from M0-01 if already chosen)
 - Fixed-height / design-system containerization for the This week split (R.9)
 - “Experimental prototype” banner; DEV-only routes; `PrototypeSwitcher`

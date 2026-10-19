@@ -84,7 +84,7 @@ M0 prototypes (Habits strip, then weekly column + incrementer + Home Targets) li
 - **R3.6** (Established 2026-10-15) Mid-week, the **target number** is edited via a **stepper near the label** (same idea as LC today). The per-goal **pencil** is for **rename + archive** only (not target size). Apps/LC have no pencil; apps/LC names are not editable as customs are.
 - **R3.7** (Established 2026-10-15) Progress weekly column chrome: **+** (top right) creates a custom goal (name + weekly target) when under the custom cap; **Active / Archived** chips flip the view; Archived shows **only archived customs** (apps/LC stay on Active). Active vs archived look meaningfully different.
 - **R3.8** (Established 2026-10-15; revised 2026-10-16) The short LeetCode-only aside on This week is **revamped** into **Check in**: classic ± for **each active custom** weekly target only. **No LC ±** and **no apps ±** here. LC weekly count still moves through Log LC (R5.17); the Weekly LC column row shows read-only **Today** / **This week** easy·medium·hard lines. **No today-LC** steppers in Check in (R1.13).
-- **R3.9** (Established 2026-10-15) Custom weekly targets get the display-only **weeks-in-a-row** flame when met ≥2 weeks (same idea as F08 R5.28 for apps/LC).
+- **R3.9** (Established 2026-10-15; show-from clarified 2026-10-19) Custom weekly targets get the display-only **weeks-in-a-row** flame when met ≥1 week (same idea as F08 R5.28 for apps/LC).
 - **R3.10** (Established 2026-10-15) Archive / restore for custom weekly targets follows the daily-habit pattern (R.7 cap on restore; archived do not consume the custom cap).
 
 ## Behavior rules
@@ -110,7 +110,7 @@ Verified by reading code (2026-10-16). Feature shipped (M0–M3).
 | Home “Update progress →” bottom-right of Habits strip → `/progress` | [`HabitsStrip.tsx`](../../../apps/web/src/features/progress/HabitsStrip.tsx) | Conforms R1.8 | |
 | Weekly goals snapshot: apps + LC + `customs.active` / `customs.archived`; `/api/weekly-customs` CRUD/±/archive; week-close Seeds for customs | [`customWeeklyGoals.ts`](../../../apps/api/src/customWeeklyGoals.ts), [`weeklyGoals.ts`](../../../apps/api/src/weeklyGoals.ts), [`043_custom_weekly_goals.sql`](../../../apps/api/src/sql/043_custom_weekly_goals.sql) | Conforms R3.1–R3.10, R.7 | Column + Check in + Home Targets |
 | Home Targets Sunday rows for unmet apps/LC + active customs | [`homeUpcoming.ts`](../../../apps/api/src/homeUpcoming.ts) `loadWeeklyGoalTargetItems` | Conforms R3.2 | |
-| Weekly-goal streak flame for apps/LC + customs when ≥2 | F08 R5.28, [`WeeklyGoalsBlock.tsx`](../../../apps/web/src/features/progress/WeeklyGoalsBlock.tsx) | Conforms R3.9 | Archived copy notes weeks-in-a-row breaks if a week closes unmet |
+| Weekly-goal streak flame for apps/LC + customs when ≥1 | F08 R5.28, [`WeeklyGoalsBlock.tsx`](../../../apps/web/src/features/progress/WeeklyGoalsBlock.tsx) | Conforms R3.9 | Archived copy notes weeks-in-a-row breaks if a week closes unmet |
 | Past work day panel includes reflection compose for the selected day (including today) | [`PastWorkPage.tsx`](../../../apps/web/src/features/progress/PastWorkPage.tsx) | Conforms R1.11 (list ownership) | Strip pencil opens standalone today-reflection modal |
 | F11 M0 prototypes deleted (routes included) | — | Conforms R.0 cleanup | M3-06 |
 
@@ -192,6 +192,7 @@ None. Prototype questions Q11–Q14 are resolved (2026-10-16).
 - **2026-10-16 (M0-02):** Weekly verdicts — Q13 classic stepper; Q14 weekly = ghost stamp (same as strip). Prototype at `/prototype/f11/habits/weekly`. M0 Done. Streak lengths stay **derived** from qualifying days / checkoffs (no stored counter); same pattern as LC/apps and weekly met-weeks.
 - **2026-10-16:** Active custom cap raised **3 → 6** for both daily habits and weekly targets (R.7). Apps + LC still always present beside customs.
 - **2026-10-19:** Active custom cap raised **6 → 9** for both daily habits and weekly targets (R.7).
+- **2026-10-19:** Weeks-in-a-row flame show-from is **1** met week (R3.9 / F08 R5.28; was ≥2).
 - **2026-10-16 (M2-03):** This week remodeled — pulse above Habits strip; Next achievements and Daily progress aside removed; apps/LC `WeeklyGoalsBlock` stays full-width until M3.
 - **2026-10-16 (M3-01):** Custom weekly schema — `custom_weekly_goals` identity (name, target_count default 3, soft archive), `custom_weekly_goal_weeks` open progress, `custom_weekly_goal_records` closed snapshots (parallel to apps/LC records).
 - **2026-10-16 (M3-04 follow-up):** Check in is customs-only ±. LC has no Check in stepper; Weekly LC shows restored Today / This week tier count lines; Weekly goals + Check in cards share fixed 28rem height.

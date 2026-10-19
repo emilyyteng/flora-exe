@@ -1,8 +1,8 @@
 import type { WeeklyCongrats } from "../../api";
 import OneTimeNotice from "../notices/OneTimeNotice";
 
-/** Proposed show-from for weekly-goal streak on the congrats banner (M5-07 Q5). */
-const STREAK_SHOW_FROM = 2;
+/** Show-from for weekly-goal streak on the congrats banner (F08 R5.28). */
+const STREAK_SHOW_FROM = 1;
 const UNIT = 20;
 const BONUS = 100;
 

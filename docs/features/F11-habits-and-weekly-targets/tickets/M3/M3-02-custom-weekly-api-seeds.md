@@ -7,7 +7,7 @@
 
 ## What to build
 
-API and domain for custom weekly targets: CRUD/archive/restore, mid-week target edits, ± progress, inclusion in weekly snapshot, week-close Seeds (+20/unit, +100 met), and display-only weeks-in-a-row (≥2) derived from closed records (same idea as `metWeeksStreaks` — **not** a stored counter).
+API and domain for custom weekly targets: CRUD/archive/restore, mid-week target edits, ± progress, inclusion in weekly snapshot, week-close Seeds (+20/unit, +100 met), and display-only weeks-in-a-row (≥1) derived from closed records (same idea as `metWeeksStreaks` — **not** a stored counter).
 
 ## Acceptance criteria
 
@@ -18,7 +18,7 @@ API and domain for custom weekly targets: CRUD/archive/restore, mid-week target 
 - [x] Weekly snapshot includes apps, LC, and active customs (creation order among customs); archived available for Archived UI.
 - [x] Name + target **carry** into new weeks; **done resets** each week (R3.5).
 - [x] Week close: customs pay same schedule as apps/LC — +20 per unit toward target, +100 flat when met (R3.4); points at close only.
-- [x] `metWeeksStreak` (or equivalent) for customs from closed records; UI shows flame when ≥ 2 (R3.9).
+- [x] `metWeeksStreak` (or equivalent) for customs from closed records; UI shows flame when ≥ 1 (R3.9; clarified 2026-10-19).
 - [x] No today-LC endpoints mixed into this surface.
 
 ## Edge cases

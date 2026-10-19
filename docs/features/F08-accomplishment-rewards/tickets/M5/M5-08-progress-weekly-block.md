@@ -21,7 +21,7 @@ The Progress weekly goals block as chosen in M5-06 (variant A with target placem
 - The target field keeps today's behavior: a positive whole number, committed on blur; an invalid value reverts.
 
 - No LeetCode stepper: M5-01 already moved logging to the Progress LeetCode card. The row updates without a reload after each LeetCode change.
-- **Weekly streak (R5.28):** each goal (LC and apps) shows its current run of met weeks, read from M5-05's records, as designed in M5-07 Q5 **B2** (`/prototype/f08/streaks/weekly-streak?variant=B2`): 🔥 flame + “N weeks in a row”, **compact and right-aligned** on the goal head row (same line as title / count / pace — not a dedicated line). Display only; no points. Proposed: show from 2 weeks. Congrats banner (M5-02) uses the same flame **inline** with a slight gap after the points breakdown.
+- **Weekly streak (R5.28):** each goal (LC and apps) shows its current run of met weeks, read from M5-05's records, as designed in M5-07 Q5 **B2** (`/prototype/f08/streaks/weekly-streak?variant=B2`): 🔥 flame + “N weeks in a row”, **compact and right-aligned** on the goal head row (same line as title / count / pace — not a dedicated line). Display only; no points. Show from **1** met week (Established 2026-10-19; was Proposed: 2). Congrats banner (M5-02) uses the same flame **inline** with a slight gap after the points breakdown.
 
 **Apps goal row**
 
@@ -67,7 +67,7 @@ The Progress weekly goals block as chosen in M5-06 (variant A with target placem
 
 **Weekly streak**
 - [x] Both goals show their current run of met weeks from M5-05's API as M5-07 Q5 B2: 🔥 + “N weeks in a row”, right-aligned on the goal head (same row as title/count/pace).
-- [x] A goal below the show-from threshold (Proposed: 2 weeks) shows no streak text.
+- [x] A goal below the show-from threshold (Established: 1 week as of 2026-10-19; shipped initially as Proposed: 2) shows no streak text.
 
 
 **Target field**
@@ -88,7 +88,7 @@ None. All decided 2026-10-13:
 - **Target field size** (was 6): today's size, logged in F09.
 - **Character count** (was 7): user-visible characters.
 - **Weekly stepper** (was 2): M5-01 comes first and removes it; this ticket never touches LeetCode logging.
-- **Weekly streak display** (was 3): owned here; M5-07 Q5 B2 locked (flame compact, right-aligned; show from 2 weeks Proposed).
+- **Weekly streak display** (was 3): owned here; M5-07 Q5 B2 locked (flame compact, right-aligned; show from 1 week Established 2026-10-19).
 
 ## Reuse notes
 
@@ -108,4 +108,4 @@ None. All decided 2026-10-13:
 
 ## Verification notes
 
-Commit: see board. Migration 033 adds LC-only `label` (char_length ≤ 50). `PATCH /weekly-goals/lc` accepts `label` and/or `targetCount`. Progress block: A2 label+target row, plain apps links, flame streak from 2 weeks, `met` / `+N` bar. Home compact unchanged aside from titles (`Weekly LC` / `Weekly apps`).
+Commit: see board. Migration 033 adds LC-only `label` (char_length ≤ 50). `PATCH /weekly-goals/lc` accepts `label` and/or `targetCount`. Progress block: A2 label+target row, plain apps links, flame streak from 1 week (clarified 2026-10-19), `met` / `+N` bar. Home compact unchanged aside from titles (`Weekly LC` / `Weekly apps`).

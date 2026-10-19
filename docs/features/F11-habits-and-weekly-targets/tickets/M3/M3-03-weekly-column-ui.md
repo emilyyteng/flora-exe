@@ -13,7 +13,7 @@ Prototype reference: `/prototype/f11/habits/weekly` column.
 
 ## Acceptance criteria
 
-- [x] Column shows apps, LC, then active customs in creation order with done/target, pace, bar, weeks-in-a-row flame when ≥ 2 (R3.9).
+- [x] Column shows apps, LC, then active customs in creation order with done/target, pace, bar, weeks-in-a-row flame when ≥ 1 (R3.9; clarified 2026-10-19).
 - [x] **+** creates custom (name + target, default 3); blocked at cap with clear message (R3.7, R.7).
 - [x] ChromeTabs Active / Archived; Archived = customs only; apps/LC stay on Active; last restore → Active (Q14 ghost).
 - [x] Custom pencil → rename/archive ModalLayer; Archive danger + confirm; target **not** edited in pencil modal.
@@ -30,7 +30,7 @@ Prototype reference: `/prototype/f11/habits/weekly` column.
 
 ## Tests
 
-- [x] Manual checklist: create, rename, archive+confirm, restore at/under cap, target stepper, Active/Archived, flame at ≥2 (use seed/API).
+- [x] Manual checklist: create, rename, archive+confirm, restore at/under cap, target stepper, Active/Archived, flame at ≥1 (use seed/API).
 - [x] `npm run check` passes.
 
 ## Reuse notes

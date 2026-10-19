@@ -271,7 +271,7 @@ Weekly goals become a closed loop: Progress edits the week, week close writes fi
 
 - LeetCode logs as weekly or misc by difficulty tier through one write path (easy +20, medium +30, hard +50). An optional ≤50-character LC label clears on a new week; the target carries forward.
 - Week close (oldest first, under a lock) stores `weekly_goal_records`, awards per-unit and flat bonus points, and carries open tagged apps into the next week. 0/0 apps never counts as met.
-- Progress shows the weekly block with pace, `met`/`+N` bar tail, flame weekly-goal streak from 2 weeks, and plain apps members (applied tags, no untag).
+- Progress shows the weekly block with pace, `met`/`+N` bar tail, flame weekly-goal streak from the first met week, and plain apps members (applied tags, no untag).
 - Home Upcoming lists unmet goals as Sunday Targets rows (mini bar, pace, `resets Monday`; LC label; no apps row when none tagged; never overdue). The hero's compact "This week" bars are gone.
 - The first Home visit after a week with met goals shows a one-time congrats banner from the week-close record (counts, points, flame streak). Seen per week in `localStorage`; the pattern is documented next to `EarnFlash` in the design system.
 
@@ -430,7 +430,7 @@ Shipped a shared Habits strip on Home and Progress, and remodeled This week arou
 
 Extended weekly goals with named custom quotas, a Check in panel, and Home Targets — same Seeds as apps and LC.
 
-- Named weekly quotas (default target three) sit beside apps and LC. Name and target carry week to week; archive parks a goal without deleting it. Week-close Seeds match apps/LC (+20 per unit, +100 when met). A weeks-in-a-row indicator appears after two met weeks and breaks if a later week closes unmet, including while archived.
+- Named weekly quotas (default target three) sit beside apps and LC. Name and target carry week to week; archive parks a goal without deleting it. Week-close Seeds match apps/LC (+20 per unit, +100 when met). A weeks-in-a-row indicator appears from the first met week and breaks if a later week closes unmet, including while archived.
 - Progress weekly column: create, Active/Archived, rename/archive, and a target stepper near each custom label. **Check in** advances only customs with ±; LC weekly progress still comes from Log LC, with read-only Today and This week tier counts under Weekly LC.
 - On Sundays, Home Targets lists unmet active customs alongside apps and LC.
 
