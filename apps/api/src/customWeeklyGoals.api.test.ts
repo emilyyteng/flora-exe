@@ -123,19 +123,19 @@ describe.skipIf(!integrationReady)("custom weekly goals API (F11 M3-02)", () => 
       .send({ delta: 1 })
       .expect(400);
 
-    for (const name of ["A", "B", "C", "D", "E", "F"]) {
+    for (const name of ["A", "B", "C", "D", "E", "F", "G", "H", "I"]) {
       await apiClient().post(`/api/weekly-customs${q}`).send({ name }).expect(201);
     }
     const capped = await apiClient()
       .post(`/api/weekly-customs${q}`)
-      .send({ name: "G" })
+      .send({ name: "J" })
       .expect(400);
-    expect(capped.body.error).toMatch(/6 active custom weekly/i);
+    expect(capped.body.error).toMatch(/9 active custom weekly/i);
 
     const blocked = await apiClient()
       .post(`/api/weekly-customs/${created.body.id}/restore${q}`)
       .expect(400);
-    expect(blocked.body.error).toMatch(/6 active custom weekly/i);
+    expect(blocked.body.error).toMatch(/9 active custom weekly/i);
 
     const activeId = (
       await apiClient().get(`/api/weekly-goals${q}`).expect(200)
@@ -149,14 +149,14 @@ describe.skipIf(!integrationReady)("custom weekly goals API (F11 M3-02)", () => 
 
   it("rejects empty name and create at the active cap", async () => {
     await apiClient().post(`/api/weekly-customs${q}`).send({ name: "   " }).expect(400);
-    for (const name of ["A", "B", "C", "D", "E", "F"]) {
+    for (const name of ["A", "B", "C", "D", "E", "F", "G", "H", "I"]) {
       await apiClient().post(`/api/weekly-customs${q}`).send({ name }).expect(201);
     }
     const capped = await apiClient()
       .post(`/api/weekly-customs${q}`)
-      .send({ name: "G" })
+      .send({ name: "J" })
       .expect(400);
-    expect(capped.body.error).toMatch(/6 active custom weekly/i);
+    expect(capped.body.error).toMatch(/9 active custom weekly/i);
   });
 
   it("target patch persists across week boundary with done reset", async () => {

@@ -40,7 +40,7 @@ import {
   TextField,
 } from "../../ui";
 
-const CUSTOM_CAP = 6;
+const CUSTOM_CAP = 9;
 
 type Section = "active" | "archived";
 

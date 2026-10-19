@@ -18,7 +18,7 @@ import {
 type Queryable = Pool | PoolClient;
 
 /** Active custom weekly targets cap (R.7). */
-export const CUSTOM_WEEKLY_ACTIVE_CAP = 6;
+export const CUSTOM_WEEKLY_ACTIVE_CAP = 9;
 
 export const DEFAULT_CUSTOM_WEEKLY_TARGET = 3;
 

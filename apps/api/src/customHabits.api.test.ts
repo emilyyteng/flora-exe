@@ -62,11 +62,11 @@ describe.skipIf(!integrationReady)("custom habits API (F11 M1-03)", () => {
 
   it("rejects empty name and create at the active cap", async () => {
     await apiClient().post(`/api/habits${q}`).send({ name: "   " }).expect(400);
-    for (const name of ["A", "B", "C", "D", "E", "F"]) {
+    for (const name of ["A", "B", "C", "D", "E", "F", "G", "H", "I"]) {
       await apiClient().post(`/api/habits${q}`).send({ name }).expect(201);
     }
-    const capped = await apiClient().post(`/api/habits${q}`).send({ name: "G" }).expect(400);
-    expect(capped.body.error).toMatch(/6 active custom habits/i);
+    const capped = await apiClient().post(`/api/habits${q}`).send({ name: "J" }).expect(400);
+    expect(capped.body.error).toMatch(/9 active custom habits/i);
   });
 
   it("checkoff awards streak points; undo reverses; double checkoff is idempotent", async () => {
@@ -125,7 +125,7 @@ describe.skipIf(!integrationReady)("custom habits API (F11 M1-03)", () => {
 
   it("archive frees cap; restore blocked at cap then succeeds under cap", async () => {
     const created = [];
-    for (const name of ["A", "B", "C", "D", "E", "F"]) {
+    for (const name of ["A", "B", "C", "D", "E", "F", "G", "H", "I"]) {
       created.push(
         (await apiClient().post(`/api/habits${q}`).send({ name }).expect(201)).body,
       );
@@ -140,16 +140,19 @@ describe.skipIf(!integrationReady)("custom habits API (F11 M1-03)", () => {
       "D",
       "E",
       "F",
+      "G",
+      "H",
+      "I",
     ]);
     expect(today.body.habits.archived.map((h: { name: string }) => h.name)).toEqual(["A"]);
 
-    const g = await apiClient().post(`/api/habits${q}`).send({ name: "G" }).expect(201);
+    const filler = await apiClient().post(`/api/habits${q}`).send({ name: "J" }).expect(201);
     const blocked = await apiClient()
       .post(`/api/habits/${a.id}/restore${q}`)
       .expect(400);
-    expect(blocked.body.error).toMatch(/6 active custom habits/i);
+    expect(blocked.body.error).toMatch(/9 active custom habits/i);
 
-    await apiClient().post(`/api/habits/${g.body.id}/archive${q}`).expect(200);
+    await apiClient().post(`/api/habits/${filler.body.id}/archive${q}`).expect(200);
     const restored = await apiClient().post(`/api/habits/${a.id}/restore${q}`).expect(200);
     expect(restored.body.archived).toBe(false);
 
@@ -161,6 +164,9 @@ describe.skipIf(!integrationReady)("custom habits API (F11 M1-03)", () => {
       "D",
       "E",
       "F",
+      "G",
+      "H",
+      "I",
     ]);
   });
 

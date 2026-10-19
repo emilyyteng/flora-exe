@@ -12,7 +12,7 @@ import {
 type Queryable = Pool | PoolClient;
 
 /** Active custom daily habits cap (R.7). Apps + LC always sit beside customs. */
-export const CUSTOM_HABIT_ACTIVE_CAP = 6;
+export const CUSTOM_HABIT_ACTIVE_CAP = 9;
 
 export type CustomHabitView = {
   id: string;

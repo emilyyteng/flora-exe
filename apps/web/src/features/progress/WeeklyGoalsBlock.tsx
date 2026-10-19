@@ -33,7 +33,7 @@ const LC_LABEL_MAX = 50;
 /** Display-only weeks-in-a-row flame (R3.9 / F08 R5.28). */
 const WEEKLY_STREAK_SHOW_FROM = 2;
 /** Active custom weekly targets cap (R.7). */
-const CUSTOM_WEEKLY_CAP = 6;
+const CUSTOM_WEEKLY_CAP = 9;
 const DEFAULT_CREATE_TARGET = 3;
 
 type Section = "active" | "archived";

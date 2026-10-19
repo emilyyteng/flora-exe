@@ -32,7 +32,7 @@ None right now.
 | F05 | Progress tracker | Activity / Effort / Outcome for application and technical prep | Legacy |
 | F07 | Home: Upcoming & weekly goals | Upcoming deadlines vs targets, weekly LC and app goals | Legacy |
 | F10 | Documentation & development process | Public-facing repo docs; `AGENTS.md`, specs, tickets, triage, rewritten changelog | None: the process itself lives in [`AGENTS.md`](../../AGENTS.md) |
-| F11 | Custom habits & weekly targets | Multi-habit daily tracker + custom weekly targets (≤6 customs beside apps+LC); This week habits hub; Home Targets for customs | [spec](./F11-habits-and-weekly-targets/spec.md) · [board](./F11-habits-and-weekly-targets/board.md) |
+| F11 | Custom habits & weekly targets | Multi-habit daily tracker + custom weekly targets (≤9 customs beside apps+LC); This week habits hub; Home Targets for customs | [spec](./F11-habits-and-weekly-targets/spec.md) · [board](./F11-habits-and-weekly-targets/board.md) |
 
 "Legacy" means the feature shipped before this process: its requirements live only in older local docs and the changelog. It gets a folder (keeping its ID) only if reopened.
 
