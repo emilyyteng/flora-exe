@@ -9,6 +9,7 @@ Maintenance has no milestones, so the board has one open table and one done list
 | Ticket | Title | Type | Status | Notes |
 |--------|-------|------|--------|-------|
 | [MT-04](./tickets/MT-04-shared-queryable-type.md) | Share one `Queryable` type instead of 11 private copies | refactor | Ready | |
+| [MT-12](./tickets/MT-12-delete-task-category-to-misc.md) | Delete task category — move tasks to Misc | build | Ready | Trash + confirm; Misc reserved dump ground; last in chips |
 | [MT-02](./tickets/MT-02-legacy-docs.md) | Re-home or retire legacy local docs | docs | Draft | Deferred until after feature work |
 | [MT-05](./tickets/MT-05-unapply-delete-application-spike.md) | Spike: should applications be un-appliable or deletable, and what happens to their points and links? | spike | Draft | Not scheduled |
 | [MT-07](./tickets/MT-07-reclaim-postings-columns.md) | Reclaim dropped-column slots on the dev `postings` table | cleanup | Draft | Not scheduled |
