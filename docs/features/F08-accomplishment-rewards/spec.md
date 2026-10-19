@@ -2,7 +2,7 @@
 
 **ID:** F08 (folder `docs/features/F08-accomplishment-rewards/`; tickets on the [board](./board.md))
 **Status:** Active
-**Last updated:** 2026-10-15
+**Last updated:** 2026-10-18
 
 ## Problem
 
@@ -284,7 +284,7 @@ Tags: **Established** means stated or confirmed by the user, and only these may 
 - **R6.3** (Established; refined 2026-10-15) The log lives on the Status page and is designed for low scroll cost: **per-day sections** (R6.7), not a flat endless list.
 - **R6.4** (Established) Its purpose is to explain why an application task disappeared, complementing the urgency cues.
 - **R6.5** (Established) Records start when M6 ships; past departures were never recorded.
-- **R6.6** (Established; pick-out 2026-10-15) The log shows every in-scope departure except postings **already applied to** (applied+). **Task removed** is true only when an open application task was deleted in that event — not when a duplicate merge *repoints* the task to the surviving posting. Those rows are **highlighted** and labeled **task removed**; an optional filter shows only them. Each day section shows a count of how many that day's departures had a task removed (**omit the count when 0**).
+- **R6.6** (Established; pick-out 2026-10-15; view chips 2026-10-18) The log shows every in-scope departure except postings **already applied to** (applied+). **Task removed** is true only when an open application task was deleted in that event — not when a duplicate merge *repoints* the task to the surviving posting. Those rows are **highlighted** and labeled **task removed**. The Status log is viewed through **exactly one** of three exclusive chips — **Left board**, **Duplicate**, or **Task removed** — with no combined “all” view (default **Left board**). Each day section shows a count of how many of the **visible** rows had a task removed (**omit when 0**, and omit on the Task removed view where every row already qualifies).
 - **R6.7** (Established 2026-10-13; retention revised 2026-10-15) Entries are kept through the **local calendar day they were recorded and until the next local day**, then purged. Grouped in **per-day sections**, with **today expanded** by default. **Timezone** for “today” / section keys is the **browser timezone** (same spirit as Progress). **Do not purge on read** of the Status/log API; purge on a **day boundary** (e.g. next ingest or a day-rollover cleanup), so a row does not vanish mid-session just because the client opened the page.
 
 ### M7: Cat Cake Collection v1 (Done)
@@ -465,7 +465,7 @@ Checked by reading code on 2026-10-12 and 2026-10-13, unless the notes say "per 
 |----------|-------|--------|-------|
 | Board-gone and duplicate deletes snapshot into `board_departures` (reason, task_removed, company display); filter rejects and applied+ retentions unlogged; UTC day-boundary purge at ingest/merge start (not on read) | [`boardDepartures.ts`](../../../apps/api/src/boardDepartures.ts), [`041_board_departures.sql`](../../../apps/api/src/sql/041_board_departures.sql), [`ingest.ts`](../../../apps/api/src/ingest.ts), [`mergeDuplicatePostings.ts`](../../../apps/api/src/mergeDuplicatePostings.ts) | Conforms R6.1, R6.2 (storage), R6.5, R6.6 (write), R6.7 (purge) | Done by M6-01 |
 | `GET /api/ops/board-departures?tz=` returns browser-local day groups with reason labels, `taskRemoved`, and `taskRemovedCount`; no purge on read | [`boardDepartures.ts`](../../../apps/api/src/boardDepartures.ts) `getBoardDeparturesSnapshot`, [`routes.ts`](../../../apps/api/src/routes.ts) | Conforms R6.2, R6.6, R6.7 (read) | Done by M6-02 |
-| Status Board departures: per-day sections (today open), reason labels, task-removed highlight/filter/copy, day count when &gt; 0 | [`BoardDeparturesLog.tsx`](../../../apps/web/src/features/ops/BoardDeparturesLog.tsx), [`Status.tsx`](../../../apps/web/src/pages/Status.tsx) | Conforms R6.2–R6.4, R6.6, R6.7 (UI) | Done by M6-03 |
+| Status Board departures: per-day sections (today open), reason labels, task-removed highlight/copy, exclusive Left board / Duplicate / Task removed chips, day count when &gt; 0 | [`BoardDeparturesLog.tsx`](../../../apps/web/src/features/ops/BoardDeparturesLog.tsx), [`Status.tsx`](../../../apps/web/src/pages/Status.tsx) | Conforms R6.2–R6.4, R6.6, R6.7 (UI) | M6-03; chips refined by M6-04 |
 
 ### M7
 
@@ -625,6 +625,7 @@ Nothing that depends on an open question may be implemented.
 - **2026-10-13:** To-do-backed applications can't be edited as applications (R2.21). Departures retention first set to 14 days (R6.7); revised 2026-10-15.
 - **2026-10-15:** M6 before M3. Board departures lock: log **board-gone** and **duplicate** deletes only (not filter rejects), each with a reason label; exclude applied+; **task removed** only when an open application task was actually deleted (duplicate *repoints* do not count); highlight + optional filter + row copy **task removed**; per-day count of task-removed departures (hide when 0); company display matches Jobs/Tasks (Simplify `department`); browser TZ; retention until the **next local day**; **no purge-on-read** (purge on day boundary).
 - **2026-10-15 (later):** M6 shipped (M6-01–M6-03). Remaining F08 milestone: M3.
+- **2026-10-18:** Board departures Status filter revised (R6.6): replace the optional “Task removed only” toggle with three exclusive chips — **Left board** / **Duplicate** / **Task removed** — no all-at-once view; default Left board (M6-04).
 - **2026-10-13:** LeetCode types are named weekly and misc. Difficulty tiers are built in M5 and polished in M8. Days store only an aggregate count; past solves count as medium.
 - **2026-10-13:** Ledger fixes ticketed under M4, worked with M5: category totals double-subtract reversals (M4-02); re-completing a reopened task earns by the actual-time change (M4-03). Duplicate merges must move reflections (M2-01).
 - **2026-10-13:** The points breakdown splits tasks by task category (R5.21, M5-03).

@@ -86,10 +86,11 @@ No open tickets.
 No open tickets.
 
 <details>
-<summary>Done (3)</summary>
+<summary>Done (4)</summary>
 
 | Ticket | Title | Commit |
 |--------|-------|--------|
+| [M6-04](./tickets/M6/M6-04-departures-view-chips.md) | Board departures exclusive view chips | (this commit) |
 | [M6-03](./tickets/M6/M6-03-status-departures-ui.md) | Status page departures UI | `96139bd` |
 | [M6-02](./tickets/M6/M6-02-departures-api.md) | Departure log API | `ec258aa` |
 | [M6-01](./tickets/M6/M6-01-departures-schema-and-writes.md) | Departure log schema and write paths | `0326405` |

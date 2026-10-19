@@ -295,7 +295,7 @@ When a posting leaves the open board (or a Simplify row is removed as a duplicat
 - Departures are snapshotted before delete: title, company, location, reason (`Left board` / `Duplicate`), and whether an open application task was actually removed (duplicate merges that only repoint a task do not count as removed).
 - Applied applications keep their postings and stay out of the log; filter-reject deletes are not logged. Records start when the feature ships — no backfill.
 - Retention is the recorded local day through the next local day; purge runs on ingest/merge day boundaries, not when the log is read.
-- Status shows per-day sections (today expanded), with task-removed rows highlighted and filterable, plus a per-day removed count when it is not zero.
+- Status shows per-day sections (today expanded), with task-removed rows highlighted, exclusive Left board / Duplicate / Task removed chips (no all-at-once view), plus a per-day removed count when it is not zero.
 
 **Outcome:** Ops Status holds a short, low-scroll record of board churn that complements urgency cues on Tasks.
 

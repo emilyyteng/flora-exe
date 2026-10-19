@@ -111,6 +111,41 @@ textarea.ui-field {
   resize: vertical;
 }
 
+/* —— Filter chips (squared L2 / in-card filters; not rounded Segmented) —— */
+.ui-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+button.secondary.ui-button.ui-filter-chip {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.28rem 0.55rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+button.secondary.ui-button.ui-filter-chip:not(:disabled):hover {
+  background: var(--surface);
+  border-color: color-mix(in srgb, var(--ink) 35%, var(--border));
+  color: var(--ink);
+  box-shadow: none;
+}
+
+button.secondary.ui-button.ui-filter-chip.is-active,
+button.secondary.ui-button.ui-filter-chip.is-active:not(:disabled):hover {
+  border-color: var(--ink);
+  background: var(--tab-active-bg);
+  color: var(--ink);
+  font-weight: 600;
+}
+
 /* —— Segmented —— */
 .ui-segmented {
   display: inline-flex;

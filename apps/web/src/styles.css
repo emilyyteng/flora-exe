@@ -3019,11 +3019,6 @@ textarea { min-height: 10rem; width: 100%; }
 .ops-departures-head .ops-card-heading {
   margin-bottom: 0;
 }
-.ops-departures-head .ui-button[aria-pressed="true"] {
-  color: var(--ink);
-  border-color: var(--ink);
-  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
-}
 .ops-departures-empty {
   margin: 0;
 }

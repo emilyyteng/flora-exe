@@ -1,5 +1,5 @@
 /**
- * Status board departures log (F08 M6-03 / R6.2–R6.7).
+ * Status board departures log (F08 M6-03 / M6-04 / R6.2–R6.7).
  */
 import { useEffect, useState } from "react";
 import {
@@ -7,7 +7,15 @@ import {
   type BoardDepartureDay,
   type BoardDeparturesSnapshot,
 } from "../../api";
-import Button from "../../ui/Button";
+import FilterChips from "../../ui/FilterChips";
+
+type DepartureView = "left_board" | "duplicate" | "task_removed";
+
+const VIEW_OPTIONS: ReadonlyArray<{ value: DepartureView; label: string }> = [
+  { value: "left_board", label: "Left board" },
+  { value: "duplicate", label: "Duplicate" },
+  { value: "task_removed", label: "Task removed" },
+];
 
 function browserTz(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
@@ -26,21 +34,34 @@ function formatDayLabel(isoDate: string, today: string): string {
 
 function visibleDays(
   snap: BoardDeparturesSnapshot,
-  taskRemovedOnly: boolean,
+  view: DepartureView,
 ): BoardDepartureDay[] {
-  if (!taskRemovedOnly) return snap.days;
   return snap.days
-    .map((day) => ({
-      ...day,
-      rows: day.rows.filter((r) => r.taskRemoved),
-    }))
+    .map((day) => {
+      const rows = day.rows.filter((r) => {
+        if (view === "left_board") return r.reason === "left_board";
+        if (view === "duplicate") return r.reason === "duplicate";
+        return r.taskRemoved;
+      });
+      return {
+        ...day,
+        rows,
+        taskRemovedCount: rows.filter((r) => r.taskRemoved).length,
+      };
+    })
     .filter((day) => day.rows.length > 0);
+}
+
+function emptyCopy(view: DepartureView): string {
+  if (view === "left_board") return "No left-board departures in the last day.";
+  if (view === "duplicate") return "No duplicate departures in the last day.";
+  return "No departures with a task removed in the last day.";
 }
 
 export default function BoardDeparturesLog() {
   const [snap, setSnap] = useState<BoardDeparturesSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [taskRemovedOnly, setTaskRemovedOnly] = useState(false);
+  const [view, setView] = useState<DepartureView>("left_board");
 
   useEffect(() => {
     let cancelled = false;
@@ -61,7 +82,7 @@ export default function BoardDeparturesLog() {
     };
   }, []);
 
-  const days = snap ? visibleDays(snap, taskRemovedOnly) : [];
+  const days = snap ? visibleDays(snap, view) : [];
   const hasAny = (snap?.days.length ?? 0) > 0;
 
   return (
@@ -75,15 +96,12 @@ export default function BoardDeparturesLog() {
           </p>
         </div>
         {hasAny && (
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-pressed={taskRemovedOnly}
-            className={taskRemovedOnly ? "is-active" : ""}
-            onClick={() => setTaskRemovedOnly((v) => !v)}
-          >
-            Task removed only
-          </Button>
+          <FilterChips
+            label="Board departure view"
+            value={view}
+            onChange={setView}
+            options={VIEW_OPTIONS}
+          />
         )}
       </div>
 
@@ -95,9 +113,7 @@ export default function BoardDeparturesLog() {
       )}
 
       {snap && hasAny && days.length === 0 && (
-        <p className="muted ops-departures-empty">
-          No departures with a task removed in the last day.
-        </p>
+        <p className="muted ops-departures-empty">{emptyCopy(view)}</p>
       )}
 
       {snap && days.length > 0 && (
@@ -112,7 +128,7 @@ export default function BoardDeparturesLog() {
                 <span className="ops-departures-day-label">
                   {formatDayLabel(day.date, snap.localDate)}
                 </span>
-                {day.taskRemovedCount > 0 && (
+                {view !== "task_removed" && day.taskRemovedCount > 0 && (
                   <span className="ops-departures-day-count">
                     {day.taskRemovedCount} task removed
                   </span>
