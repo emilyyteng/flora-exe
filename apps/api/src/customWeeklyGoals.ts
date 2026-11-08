@@ -17,9 +17,6 @@ import {
 
 type Queryable = Pool | PoolClient;
 
-/** Active custom weekly targets cap (R.7). */
-export const CUSTOM_WEEKLY_ACTIVE_CAP = 9;
-
 export const DEFAULT_CUSTOM_WEEKLY_TARGET = 3;
 
 export type CustomWeeklyGoalView = {
@@ -74,13 +71,6 @@ export function normalizeTargetCount(raw: unknown): number {
     throw Object.assign(new Error("targetCount must be a positive integer"), { status: 400 });
   }
   return raw;
-}
-
-async function lockActiveCustoms(db: PoolClient): Promise<number> {
-  const { rows } = await db.query<{ id: string }>(
-    `SELECT id FROM custom_weekly_goals WHERE archived_at IS NULL ORDER BY created_at ASC FOR UPDATE`,
-  );
-  return rows.length;
 }
 
 async function requireGoal(
@@ -239,15 +229,6 @@ export async function createCustomWeeklyGoal(
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    const activeCount = await lockActiveCustoms(client);
-    if (activeCount >= CUSTOM_WEEKLY_ACTIVE_CAP) {
-      throw Object.assign(
-        new Error(
-          `At most ${CUSTOM_WEEKLY_ACTIVE_CAP} active custom weekly goals (archive one to create another)`,
-        ),
-        { status: 400 },
-      );
-    }
     const { rows } = await client.query<{ id: string; name: string; target_count: number }>(
       `INSERT INTO custom_weekly_goals (name, target_count, created_at)
        VALUES ($1, $2, $3)
@@ -422,16 +403,6 @@ export async function restoreCustomWeeklyGoal(
         progress,
         weekElapsedFraction(now, weekStart, tz),
         streaks[row.id] ?? 0,
-      );
-    }
-
-    const activeCount = await lockActiveCustoms(client);
-    if (activeCount >= CUSTOM_WEEKLY_ACTIVE_CAP) {
-      throw Object.assign(
-        new Error(
-          `At most ${CUSTOM_WEEKLY_ACTIVE_CAP} active custom weekly goals (archive one to restore another)`,
-        ),
-        { status: 400 },
       );
     }
 

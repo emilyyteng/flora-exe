@@ -11,9 +11,6 @@ import {
 
 type Queryable = Pool | PoolClient;
 
-/** Active custom daily habits cap (R.7). Apps + LC always sit beside customs. */
-export const CUSTOM_HABIT_ACTIVE_CAP = 9;
-
 export type CustomHabitView = {
   id: string;
   name: string;
@@ -44,13 +41,6 @@ export function normalizeHabitName(raw: unknown): string {
     throw Object.assign(new Error("name must be at most 50 characters"), { status: 400 });
   }
   return name;
-}
-
-async function lockActiveHabits(db: PoolClient): Promise<number> {
-  const { rows } = await db.query<{ id: string }>(
-    `SELECT id FROM custom_habits WHERE archived_at IS NULL ORDER BY created_at ASC FOR UPDATE`,
-  );
-  return rows.length;
 }
 
 async function requireHabit(
@@ -128,30 +118,11 @@ export async function createCustomHabit(
   now = new Date(),
 ): Promise<CustomHabitView> {
   const name = normalizeHabitName(rawName);
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const activeCount = await lockActiveHabits(client);
-    if (activeCount >= CUSTOM_HABIT_ACTIVE_CAP) {
-      throw Object.assign(
-        new Error(
-          `At most ${CUSTOM_HABIT_ACTIVE_CAP} active custom habits (archive one to create another)`,
-        ),
-        { status: 400 },
-      );
-    }
-    const { rows } = await client.query<{ id: string; name: string }>(
-      `INSERT INTO custom_habits (name) VALUES ($1) RETURNING id, name`,
-      [name],
-    );
-    await client.query("COMMIT");
-    return toView(pool, { id: rows[0]!.id, name: rows[0]!.name, archived: false }, tz, now);
-  } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
-  }
+  const { rows } = await pool.query<{ id: string; name: string }>(
+    `INSERT INTO custom_habits (name) VALUES ($1) RETURNING id, name`,
+    [name],
+  );
+  return toView(pool, { id: rows[0]!.id, name: rows[0]!.name, archived: false }, tz, now);
 }
 
 export async function renameCustomHabit(
@@ -207,54 +178,22 @@ export async function restoreCustomHabit(
   tz: string,
   now = new Date(),
 ): Promise<CustomHabitView> {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const { rows: found } = await client.query<{
-      id: string;
-      name: string;
-      archived_at: Date | null;
-    }>(`SELECT id, name, archived_at FROM custom_habits WHERE id = $1::uuid FOR UPDATE`, [
-      habitId,
-    ]);
-    const row = found[0];
-    if (!row) {
-      throw Object.assign(new Error("Habit not found"), { status: 404 });
-    }
-    if (row.archived_at == null) {
-      await client.query("COMMIT");
-      return toView(pool, { id: row.id, name: row.name, archived: false }, tz, now);
-    }
-
-    const activeCount = await lockActiveHabits(client);
-    if (activeCount >= CUSTOM_HABIT_ACTIVE_CAP) {
-      throw Object.assign(
-        new Error(
-          `At most ${CUSTOM_HABIT_ACTIVE_CAP} active custom habits (archive one to restore another)`,
-        ),
-        { status: 400 },
-      );
-    }
-
-    const { rows } = await client.query<{ id: string; name: string; archived_at: Date | null }>(
-      `UPDATE custom_habits SET archived_at = NULL WHERE id = $1::uuid
-       RETURNING id, name, archived_at`,
-      [habitId],
-    );
-    await client.query("COMMIT");
-    const updated = rows[0]!;
-    return toView(
-      pool,
-      { id: updated.id, name: updated.name, archived: updated.archived_at != null },
-      tz,
-      now,
-    );
-  } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
+  const habit = await requireHabit(pool, habitId);
+  if (!habit.archived) {
+    return toView(pool, habit, tz, now);
   }
+  const { rows } = await pool.query<{ id: string; name: string; archived_at: Date | null }>(
+    `UPDATE custom_habits SET archived_at = NULL WHERE id = $1::uuid
+     RETURNING id, name, archived_at`,
+    [habitId],
+  );
+  const row = rows[0]!;
+  return toView(
+    pool,
+    { id: row.id, name: row.name, archived: row.archived_at != null },
+    tz,
+    now,
+  );
 }
 
 /**

@@ -402,7 +402,7 @@ Progress becomes a nested hub for weekly pace and lifetime accumulation. Currenc
 
 Locked the product rules and settled contested chrome in throwaway prototypes before building.
 
-- Up to six custom daily habits and six custom weekly targets beside always-present apps and LC; same daily streak points as LC/apps; archive does not freeze time; Progress → This week is the habits hub.
+- Custom daily habits and custom weekly targets beside always-present apps and LC (no active count cap); same daily streak points as LC/apps; archive does not freeze time; Progress → This week is the habits hub.
 - Prototypes chose checkoff vs edit on habit pills, where today-LC logging lives on the strip, classic weekly ± steppers, and a ghost-stamp Archived look. They were deleted when the feature closed.
 
 **Outcome:** Build work followed locked UX instead of inventing strip or weekly chrome mid-implementation.
@@ -413,7 +413,7 @@ Added named daily habits with the same streak-points rules as LC and apps, expos
 
 - Each habit is a named identity with a boolean checkoff for today; streak length is derived from those days (same idea as LC/apps).
 - Points reuse the shared daily and milestone formulas, awarded and reversed only for today, under ledger source ids that cannot collide with `lc:` or `apps:`.
-- An API creates, renames, archives, restores, and checks off habits (six active customs max). Today's progress payload includes active and archived habits beside LC and apps streaks.
+- An API creates, renames, archives, restores, and checks off habits (no active count cap). Today's progress payload includes active and archived habits beside LC and apps streaks.
 
 **Outcome:** The backend can drive a Habits strip; the UI followed in M2.
 
@@ -421,7 +421,7 @@ Added named daily habits with the same streak-points rules as LC and apps, expos
 
 Shipped a shared Habits strip on Home and Progress, and remodeled This week around it.
 
-- **Habits strip.** Active shows Apps and LC as derived pills, then customs you can check off, rename, or archive, plus a create slot under the custom cap. Archived shows only parked customs; missed days while archived still break the streak. The band also holds Add reflection and Log LC; on Home, Update progress links into Progress.
+- **Habits strip.** Active shows Apps and LC as derived pills, then customs you can check off, rename, or archive, plus a create slot (always available). Archived shows only parked customs; missed days while archived still break the streak. The band also holds Add reflection and Log LC; on Home, Update progress links into Progress.
 - **This week.** Week and month pulse cards stay above the strip. Next achievements and the Daily progress aside were removed so the page is the habits hub, not a second achievements surface.
 
 **Outcome:** Daily customs are checkable where the day is managed, and This week has one clear place for habits work.

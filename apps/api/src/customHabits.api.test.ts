@@ -60,13 +60,13 @@ describe.skipIf(!integrationReady)("custom habits API (F11 M1-03)", () => {
     expect(today.body.streaks.apps).toEqual({ length: 0, todayCounts: false });
   });
 
-  it("rejects empty name and create at the active cap", async () => {
+  it("rejects empty name; allows create with no active cap", async () => {
     await apiClient().post(`/api/habits${q}`).send({ name: "   " }).expect(400);
-    for (const name of ["A", "B", "C", "D", "E", "F", "G", "H", "I"]) {
+    for (const name of ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]) {
       await apiClient().post(`/api/habits${q}`).send({ name }).expect(201);
     }
-    const capped = await apiClient().post(`/api/habits${q}`).send({ name: "J" }).expect(400);
-    expect(capped.body.error).toMatch(/9 active custom habits/i);
+    const today = await apiClient().get(`/api/progress/today${q}`).expect(200);
+    expect(today.body.habits.active).toHaveLength(10);
   });
 
   it("checkoff awards streak points; undo reverses; double checkoff is idempotent", async () => {
@@ -123,36 +123,16 @@ describe.skipIf(!integrationReady)("custom habits API (F11 M1-03)", () => {
     );
   });
 
-  it("archive frees cap; restore blocked at cap then succeeds under cap", async () => {
-    const created = [];
-    for (const name of ["A", "B", "C", "D", "E", "F", "G", "H", "I"]) {
-      created.push(
-        (await apiClient().post(`/api/habits${q}`).send({ name }).expect(201)).body,
-      );
-    }
-    const a = created[0]!;
+  it("archive moves to Archived; restore returns to Active with no cap", async () => {
+    const a = (await apiClient().post(`/api/habits${q}`).send({ name: "A" }).expect(201)).body;
+    const b = (await apiClient().post(`/api/habits${q}`).send({ name: "B" }).expect(201)).body;
 
     await apiClient().post(`/api/habits/${a.id}/archive${q}`).expect(200);
     const today = await apiClient().get(`/api/progress/today${q}`).expect(200);
-    expect(today.body.habits.active.map((h: { name: string }) => h.name)).toEqual([
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "I",
-    ]);
+    expect(today.body.habits.active.map((h: { name: string }) => h.name)).toEqual(["B"]);
     expect(today.body.habits.archived.map((h: { name: string }) => h.name)).toEqual(["A"]);
 
-    const filler = await apiClient().post(`/api/habits${q}`).send({ name: "J" }).expect(201);
-    const blocked = await apiClient()
-      .post(`/api/habits/${a.id}/restore${q}`)
-      .expect(400);
-    expect(blocked.body.error).toMatch(/9 active custom habits/i);
-
-    await apiClient().post(`/api/habits/${filler.body.id}/archive${q}`).expect(200);
+    await apiClient().post(`/api/habits${q}`).send({ name: "C" }).expect(201);
     const restored = await apiClient().post(`/api/habits/${a.id}/restore${q}`).expect(200);
     expect(restored.body.archived).toBe(false);
 
@@ -161,13 +141,9 @@ describe.skipIf(!integrationReady)("custom habits API (F11 M1-03)", () => {
       "A",
       "B",
       "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "I",
     ]);
+    expect(after.body.habits.archived).toEqual([]);
+    expect(b.id).toBeTruthy();
   });
 
   it("rename persists without resetting checkoff history / length", async () => {

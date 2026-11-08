@@ -32,8 +32,6 @@ import { lcCountsLine } from "./LeetcodeLogger";
 const LC_LABEL_MAX = 50;
 /** Display-only weeks-in-a-row flame (R3.9 / F08 R5.28). */
 const WEEKLY_STREAK_SHOW_FROM = 1;
-/** Active custom weekly targets cap (R.7). */
-const CUSTOM_WEEKLY_CAP = 9;
 const DEFAULT_CREATE_TARGET = 3;
 
 type Section = "active" | "archived";
@@ -421,7 +419,6 @@ export default function WeeklyGoalsBlock({
   const customs = snapshot?.customs ?? { active: [], archived: [] };
   const activeCustoms = customs.active;
   const archivedCustoms = customs.archived;
-  const atCap = activeCustoms.length >= CUSTOM_WEEKLY_CAP;
   const hasArchived = archivedCustoms.length > 0;
   const tz = snapshot?.tz ?? "";
 
@@ -522,20 +519,10 @@ export default function WeeklyGoalsBlock({
               size="sm"
               variant="secondary"
               className="weekly-goals-add"
-              disabled={busy || atCap}
-              title={
-                atCap
-                  ? `Custom cap (${CUSTOM_WEEKLY_CAP}) reached`
-                  : "Add custom weekly goal"
-              }
+              disabled={busy}
+              title="Add custom weekly goal"
               aria-label="Add goal"
               onClick={() => {
-                if (atCap) {
-                  setMessage(
-                    `At most ${CUSTOM_WEEKLY_CAP} active custom weekly goals (archive one to create another)`,
-                  );
-                  return;
-                }
                 setCreateOpen(true);
                 setCreateName("");
                 setCreateTarget(DEFAULT_CREATE_TARGET);
@@ -747,8 +734,8 @@ export default function WeeklyGoalsBlock({
           <ModalHeader id="weekly-archive-title" title="Archive this weekly goal?" />
           <ModalBody>
             <p className="habits-hint" style={{ marginTop: 0 }}>
-              <strong>{archiveTarget.name}</strong> leaves Active and stops counting toward the
-              custom cap until restored.
+              <strong>{archiveTarget.name}</strong> leaves Active until restored. Progress for the
+              current week is kept; Check in is unavailable while archived.
             </p>
           </ModalBody>
           <ModalFooter>

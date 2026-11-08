@@ -14,7 +14,7 @@ Prototype reference: `/prototype/f11/habits/weekly` column.
 ## Acceptance criteria
 
 - [x] Column shows apps, LC, then active customs in creation order with done/target, pace, bar, weeks-in-a-row flame when ≥ 1 (R3.9; clarified 2026-10-19).
-- [x] **+** creates custom (name + target, default 3); blocked at cap with clear message (R3.7, R.7).
+- [x] **+** creates custom (name + target, default 3); no active cap (R3.7, R.7 uncapped 2026-11-07).
 - [x] ChromeTabs Active / Archived; Archived = customs only; apps/LC stay on Active; last restore → Active (Q14 ghost).
 - [x] Custom pencil → rename/archive ModalLayer; Archive danger + confirm; target **not** edited in pencil modal.
 - [x] Near-label **Target** stepper for LC and each custom (R3.6); apps have no target stepper/pencil.

@@ -40,8 +40,6 @@ import {
   TextField,
 } from "../../ui";
 
-const CUSTOM_CAP = 9;
-
 type Section = "active" | "archived";
 
 type HabitRow = {
@@ -287,7 +285,6 @@ export default function HabitsStrip({
   const habits = today.habits ?? { active: [], archived: [] };
   const active = habits.active;
   const archived = habits.archived;
-  const atCustomCap = active.length >= CUSTOM_CAP;
   const hasArchived = archived.length > 0;
 
   useEffect(() => {
@@ -462,16 +459,14 @@ export default function HabitsStrip({
                   }}
                 />
               ))}
-              {!atCustomCap && (
-                <CreateSlot
-                  disabled={busy}
-                  onCreate={() => {
-                    setCreateOpen(true);
-                    setCreateName("");
-                    setMessage(null);
-                  }}
-                />
-              )}
+              <CreateSlot
+                disabled={busy}
+                onCreate={() => {
+                  setCreateOpen(true);
+                  setCreateName("");
+                  setMessage(null);
+                }}
+              />
             </div>
             {inlineActions}
           </div>

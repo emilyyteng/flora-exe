@@ -13,10 +13,10 @@ HTTP API for creating, renaming, archiving, restoring, and checking off custom d
 
 ### Mutations
 
-- [x] **Create** habit: trimmed name required; max 50 chars; empty rejected; duplicates allowed; rejected when active custom count ≥ 3 with a clear error message (R.7); new habit starts with no checkoffs / length 0.
+- [x] **Create** habit: trimmed name required; max 50 chars; empty rejected; duplicates allowed; no active count cap (R.7 uncapped 2026-11-07; shipped initially with a cap); new habit starts with no checkoffs / length 0.
 - [x] **Rename:** updates label only; does not reset checkoff history or identity (R1.3, B1).
-- [x] **Archive:** sets archived; habit leaves Active; frees a custom cap slot; does not hard-delete (R1.6, R.10).
-- [x] **Restore:** clears archived; rejected at custom cap with clear message (no silent swap) (R.7).
+- [x] **Archive:** sets archived; habit leaves Active; does not hard-delete (R1.6, R.10).
+- [x] **Restore:** clears archived; always allowed (R.7 uncapped 2026-11-07).
 - [x] **Checkoff today / undo today:** boolean only; calls M1-02 points sync for today; cannot check off “for” another date via this API (R1.5, R1.7).
 
 ### Reads
